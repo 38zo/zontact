@@ -91,11 +91,3 @@ Yes, you can view all submitted messages in the WordPress admin under Zontact > 
 
 = 1.0.0 =
 Initial release of Zontact - a simple, accessible floating contact form plugin.
-
-== Support ==
-
-For support, please visit the [WordPress.org support forums](https://wordpress.org/support/plugin/zontact) or contact us at [38zo.com](https://38zo.com).
-
-== Privacy Policy ==
-
-This plugin does not collect any personal data. Contact form submissions are sent via email and optionally stored in your WordPress database. No data is sent to external servers.
