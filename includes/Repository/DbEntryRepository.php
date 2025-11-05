@@ -39,8 +39,9 @@ final class DbEntryRepository implements EntryRepositoryInterface {
 			return (array) $cached_result;
 		}
 
-		$where = '1=1';
-		$args  = [];
+		// Always ensure there is at least one placeholder so we can safely use prepare().
+		$where = '1=%d';
+		$args  = [ 1 ];
 		if ( $search ) {
 			$like  = '%' . $wpdb->esc_like( $search ) . '%';
 			$where = '(name LIKE %s OR email LIKE %s OR message LIKE %s)';
@@ -88,14 +89,8 @@ final class DbEntryRepository implements EntryRepositoryInterface {
 		}
 
 		$query = "SELECT COUNT(*) FROM {$table} WHERE {$where}";
-		
-		// Only use prepare if we have placeholders
-		if ( ! empty( $args ) ) {
-			$sql   = $wpdb->prepare( $query, $args ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
-			$count = (int) $wpdb->get_var( $sql ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery
-		} else {
-			$count = (int) $wpdb->get_var( $query ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		}
+		$sql   = $wpdb->prepare( $query, $args ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+		$count = (int) $wpdb->get_var( $sql ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery
 		
 		// Cache count for 5 minutes.
 		wp_cache_set( $cache_key, $count, 'zontact', 300 );
