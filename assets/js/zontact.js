@@ -98,25 +98,68 @@
 				body:data, 
 				credentials:'same-origin' 
 			})
-			.then(function(res){ return res.json(); })
-			.then(function(json){
-				if(json && json.success){
-					setStatus(statusEl, (zontact && zontact.strings && zontact.strings.success) || 'Sent.', 'success');
-					form.reset();
-					setTimeout(function(){ 
-						closeModal(root, modal); 
-						setStatus(statusEl,''); 
-						setSubmitState(submitBtn, false);
-					}, 1500);
-				}else{
-					setStatus(statusEl, (zontact && zontact.strings && zontact.strings.error) || 'There was an error.', 'error');
-					setSubmitState(submitBtn, false);
-				}
-			})
-			.catch(function(){ 
-				setStatus(statusEl, (zontact && zontact.strings && zontact.strings.error) || 'There was an error.', 'error');
-				setSubmitState(submitBtn, false);
-			});
+            .then(function(res){
+                var ct = res.headers.get('content-type') || '';
+                if(ct.indexOf('application/json') !== -1){
+                    return res.json();
+                }
+                return res.text().then(function(text){
+                    return { __nonJson: true, ok: res.ok, status: res.status, text: text };
+                });
+            })
+            .then(function(payload){
+                // Handle non-JSON (e.g., nonce failure outputs "-1")
+                if(payload && payload.__nonJson){
+                    var isNonceFail = payload.text && payload.text.trim() === '-1';
+                    var msg = isNonceFail
+                        ? 'Security check failed. Please reload the page and try again.'
+                        : ((zontact && zontact.strings && zontact.strings.error) || 'There was an error.');
+                    setStatus(statusEl, msg, 'error');
+                    setSubmitState(submitBtn, false);
+                    return;
+                }
+
+                var json = payload;
+                if(json && json.success){
+                    setStatus(statusEl, (zontact && zontact.strings && zontact.strings.success) || 'Sent.', 'success');
+                    form.reset();
+                    setTimeout(function(){ 
+                        closeModal(root, modal); 
+                        setStatus(statusEl,''); 
+                        setSubmitState(submitBtn, false);
+                    }, 1500);
+                } else {
+                    // Prefer server message if provided
+                    var message = (json && json.data && json.data.message) 
+                        || ((zontact && zontact.strings && zontact.strings.error) || 'There was an error.');
+
+                    // Field-level errors handling
+                    if(json && json.data && json.data.errors){
+                        try{
+                            // Clear previous field errors
+                            qsa('.zontact-field', form).forEach(function(w){ w.classList.remove('has-error'); });
+                            Object.keys(json.data.errors).forEach(function(field){
+                                var input = qs('[name="' + field + '"]', form);
+                                if(input){
+                                    var wrapper = input.closest('.zontact-field');
+                                    if(wrapper){ wrapper.classList.add('has-error'); }
+                                    input.setAttribute('aria-invalid','true');
+                                }
+                            });
+                        }catch(e){}
+                        // Concatenate error strings for status line for quick feedback
+                        var errs = Object.values(json.data.errors).join(' ');
+                        if(errs){ message = errs; }
+                    }
+
+                    setStatus(statusEl, message, 'error');
+                    setSubmitState(submitBtn, false);
+                }
+            })
+            .catch(function(){ 
+                setStatus(statusEl, (zontact && zontact.strings && zontact.strings.error) || 'There was an error.', 'error');
+                setSubmitState(submitBtn, false);
+            });
 		});
 	});
 })();

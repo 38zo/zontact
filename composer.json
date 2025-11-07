@@ -1,6 +1,6 @@
 {
     "name": "38zo/zontact",
-    "description": "One button, one form, zero hassle.",
+    "description": "One button, one form, zero hassle. Floating contact button opens an accessible modal with a contact form.",
     "type": "wordpress-plugin",
     "license": "GPL-3.0-or-later",
     "minimum-stability": "stable",
@@ -35,5 +35,10 @@
             "dealerdirect/phpcodesniffer-composer-installer": true
         },
         "sort-packages": true
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "@php -r \"echo '✔ Composer install complete. Run composer install --no-dev for production.\\n';\""
+        ]
     }
 }

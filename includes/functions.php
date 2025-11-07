@@ -39,51 +39,27 @@ function zontact_sanitize_html( $text ) {
 }
 
 /**
- * Filter out JavaScript-related keywords and inline scripts from an input string
+ * Sanitize user input for safe output.
  *
  * @param string $input
  * @return string
  */
-function zontact_sanitize_javascript( $input ) {
-    // list of JavaScript-related attributes to filter out
-    $javascript_attributes = array(
-        'innerHTML',
-        'document\.write',
-        'eval',
-        'Function\(',
-        'setTimeout',
-        'setInterval',
-        'new Function\(',
-        'onmouseover',
-        'onmouseout',
-        'onpointerenter',
-        'onclick',
-        'onload',
-        'onchange',
-        'onerror',
-        '<script>',
-        '<\/script>',
-        'encodeURIComponent',
-        'decodeURIComponent',
-        'JSON\.parse',
-        'outerHTML',
-        'innerHTML',
-        'XMLHttpRequest',
-        'createElement',
-        'appendChild',
-        'RegExp',
-        'String\.fromCharCode',
-        'encodeURI',
-        'decodeURI',
-        'javascript:'
-    );
+function zontact_sanitize_input( $input ) {
+    // 1. Remove any script tags or inline event attributes safely.
+    $input = wp_kses( $input, array(
+        'a'      => array( 'href' => array(), 'title' => array(), 'target' => array() ),
+        'br'     => array(),
+        'em'     => array(),
+        'strong' => array(),
+        'p'      => array(),
+        'span'   => array(),
+    ) );
 
-    $pattern = '/' . implode( '|', $javascript_attributes ) . '/i';
+    // 2. Strip any "javascript:" URLs if present.
+    $input = preg_replace( '/javascript\s*:/i', '', $input );
 
-    // Use regex to replace potentially dangerous strings with an empty string
-    $input = preg_replace( $pattern, '', $input );
-
-    return $input;
+    // 3. Final safety net
+    return sanitize_text_field( $input );
 }
 
 /**
@@ -94,7 +70,7 @@ function zontact_sanitize_javascript( $input ) {
  * @return string
  */
 function zontact_sanitize_full( $text ) {
-	return zontact_sanitize_html( zontact_sanitize_javascript( $text ) );
+    return zontact_sanitize_input( $text );
 }
 
 /**

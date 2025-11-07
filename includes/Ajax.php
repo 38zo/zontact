@@ -31,8 +31,15 @@ final class Ajax {
 	 *
 	 * @return void
 	 */
-	public function handle(): void {
-		check_ajax_referer( 'zontact_submit', 'nonce' );
+    public function handle(): void {
+        // Manual nonce verification to ensure JSON error response instead of -1 die.
+        $nonce = isset( $_POST['nonce'] ) ? wp_unslash( $_POST['nonce'] ) : '';
+        if ( empty( $nonce ) || ! wp_verify_nonce( $nonce, 'zontact_submit' ) ) {
+            wp_send_json_error(
+                [ 'message' => __( 'Security check failed. Please reload the page and try again.', 'zontact' ) ],
+                403
+            );
+        }
 
 		$name    = sanitize_text_field( wp_unslash( $_POST['name'] ?? '' ) );
 		$email   = sanitize_email( wp_unslash( $_POST['email'] ?? '' ) );
