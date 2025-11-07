@@ -44,13 +44,14 @@ final class EntriesListTable extends \WP_List_Table {
 	/** @inheritDoc */
 	public function get_columns(): array {
 		return [
-			'cb'        => '<input type="checkbox" />',
-			'id'        => __( 'ID', 'zontact' ),
-			'name'      => __( 'Name', 'zontact' ),
-			'email'     => __( 'Email', 'zontact' ),
-			'subject'   => __( 'Subject', 'zontact' ),
-			'message'   => __( 'Message', 'zontact' ),
-			'created_at'=> __( 'Date', 'zontact' ),
+			'cb'          => '<input type="checkbox" />',
+			'id'          => __( 'ID', 'zontact' ),
+			'name'        => __( 'Name', 'zontact' ),
+			'email'       => __( 'Email', 'zontact' ),
+			'subject'     => __( 'Subject', 'zontact' ),
+			'email_status'=> __( 'Email Status', 'zontact' ),
+			'message'     => __( 'Message', 'zontact' ),
+			'created_at'  => __( 'Date', 'zontact' ),
 		];
 	}
 
@@ -69,7 +70,7 @@ final class EntriesListTable extends \WP_List_Table {
 
 	/** @inheritDoc */
 	protected function column_default( $item, $column_name ) {
-		switch ( $column_name ) {
+			switch ( $column_name ) {
 			case 'id':
 				return (int) $item['id'];
 			case 'name':
@@ -78,6 +79,32 @@ final class EntriesListTable extends \WP_List_Table {
 				return esc_html( (string) $item['email'] );
 			case 'subject':
 				return esc_html( (string) ( $item['subject'] ?? '' ) );
+				case 'email_status':
+					$status = isset( $item['email_status'] ) ? (string) $item['email_status'] : 'pending';
+					$label  = __( 'Pending', 'zontact' );
+
+					switch ( $status ) {
+						case 'sent':
+							$label = __( 'Sent', 'zontact' );
+							break;
+						case 'failed':
+							$label = __( 'Failed', 'zontact' );
+							break;
+					}
+					$output = esc_html( $label );
+
+					if ( ! empty( $item['email_sent_at'] ) ) {
+						$sent_time = strtotime( (string) $item['email_sent_at'] );
+						if ( $sent_time ) {
+							$output .= '<br><span class="description">' . esc_html( date_i18n( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), $sent_time ) ) . '</span>';
+						}
+					}
+
+					if ( 'failed' === $status && ! empty( $item['email_error'] ) ) {
+						$output .= '<br><span class="description">' . esc_html( (string) $item['email_error'] ) . '</span>';
+					}
+
+					return $output;
 			case 'message':
 				return esc_html( wp_trim_words( wp_strip_all_tags( (string) $item['message'] ), 20, '…' ) );
 			case 'created_at':

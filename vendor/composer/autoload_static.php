@@ -137,6 +137,7 @@ class ComposerStaticInit0e62d0a7985e95454f65d5461b3bbecb
         'ThirtyEightZo\\Zontact\\Assets' => __DIR__ . '/../..' . '/includes/Assets.php',
         'ThirtyEightZo\\Zontact\\Database' => __DIR__ . '/../..' . '/includes/Database.php',
         'ThirtyEightZo\\Zontact\\Frontend' => __DIR__ . '/../..' . '/includes/Frontend.php',
+        'ThirtyEightZo\\Zontact\\Mail\\EmailService' => __DIR__ . '/../..' . '/includes/Mail/EmailService.php',
         'ThirtyEightZo\\Zontact\\Options' => __DIR__ . '/../..' . '/includes/Options.php',
         'ThirtyEightZo\\Zontact\\Plugin' => __DIR__ . '/../..' . '/includes/Plugin.php',
         'ThirtyEightZo\\Zontact\\Repository\\DbEntryRepository' => __DIR__ . '/../..' . '/includes/Repository/DbEntryRepository.php',

@@ -114,6 +114,7 @@ return array(
     'ThirtyEightZo\\Zontact\\Assets' => $baseDir . '/includes/Assets.php',
     'ThirtyEightZo\\Zontact\\Database' => $baseDir . '/includes/Database.php',
     'ThirtyEightZo\\Zontact\\Frontend' => $baseDir . '/includes/Frontend.php',
+    'ThirtyEightZo\\Zontact\\Mail\\EmailService' => $baseDir . '/includes/Mail/EmailService.php',
     'ThirtyEightZo\\Zontact\\Options' => $baseDir . '/includes/Options.php',
     'ThirtyEightZo\\Zontact\\Plugin' => $baseDir . '/includes/Plugin.php',
     'ThirtyEightZo\\Zontact\\Repository\\DbEntryRepository' => $baseDir . '/includes/Repository/DbEntryRepository.php',

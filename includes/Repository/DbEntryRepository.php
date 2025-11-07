@@ -48,7 +48,7 @@ final class DbEntryRepository implements EntryRepositoryInterface {
 			$args  = [ $like, $like, $like ];
 		}
 
-		$query = "SELECT id, form_key, name, email, phone, subject, message, created_at
+		$query = "SELECT id, form_key, name, email, phone, subject, message, email_status, email_error, email_sent_at, created_at
 			FROM {$table}
 			WHERE {$where}
 			ORDER BY id DESC

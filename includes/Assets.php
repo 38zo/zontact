@@ -58,7 +58,8 @@ final class Assets {
 				'strings'  => [
 					'sending' => __( 'Sending…', 'zontact' ),
 					'error'   => __( 'Please fix the errors and try again.', 'zontact' ),
-					'success' => $options['success_message'] ?? __( 'Message sent successfully!', 'zontact' ),
+                    'success' => $options['success_message'] ?? __( 'Message sent successfully!', 'zontact' ),
+                    'warning' => __( 'Message saved, but email delivery failed. We will review it shortly.', 'zontact' ),
 				],
 			]
 		);

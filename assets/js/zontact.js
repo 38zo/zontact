@@ -119,16 +119,30 @@
                     return;
                 }
 
-                var json = payload;
-                if(json && json.success){
-                    setStatus(statusEl, (zontact && zontact.strings && zontact.strings.success) || 'Sent.', 'success');
-                    form.reset();
-                    setTimeout(function(){ 
-                        closeModal(root, modal); 
-                        setStatus(statusEl,''); 
-                        setSubmitState(submitBtn, false);
-                    }, 1500);
-                } else {
+			var json = payload;
+			if(json && json.success){
+				var successMsg = (zontact && zontact.strings && zontact.strings.success) || 'Sent.';
+				var statusType = 'success';
+
+				if(json.data && json.data.warning){
+					var warningText = json.data.warning;
+					successMsg = successMsg + ' ' + warningText;
+					statusType = 'warning';
+				}
+
+				setStatus(statusEl, successMsg, statusType);
+				form.reset();
+
+				if(statusType === 'success'){
+					setTimeout(function(){ 
+						closeModal(root, modal); 
+						setStatus(statusEl,''); 
+						setSubmitState(submitBtn, false);
+					}, 1500);
+				} else {
+					setSubmitState(submitBtn, false);
+				}
+			} else {
                     // Prefer server message if provided
                     var message = (json && json.data && json.data.message) 
                         || ((zontact && zontact.strings && zontact.strings.error) || 'There was an error.');
