@@ -5,7 +5,7 @@ Tags: contact form, floating button, modal, accessibility, contact
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.0.7
+Stable tag: 1.0.8
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -74,6 +74,12 @@ Yes, you can view all submitted messages in the WordPress admin under Zontact > 
 
 == Changelog ==
 
+= 1.0.8 =
+* Improved settings page with a new tabbed layout for better organization.
+* Added support for developers to easily extend settings sections and fields.
+* Introduced a button visibility toggle allowing admins to control when the floating contact button appears on the frontend.
+* Minor UI refinements and code cleanup for better maintainability.
+
 = 1.0.0 =
 * Initial release
 * Floating contact button with modal
@@ -82,6 +88,7 @@ Yes, you can view all submitted messages in the WordPress admin under Zontact > 
 * Message storage and admin interface
 * Full accessibility support
 * Translation ready
+
 
 == Upgrade Notice ==
 
