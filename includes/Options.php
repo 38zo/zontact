@@ -23,21 +23,22 @@ class Options {
 	 */
 	public static function defaults(): array {
 		$defaults = array(
-			'recipient_email'   => get_option( 'admin_email' ),
-			'subject'           => sprintf(
+			'enable_button'      => true,
+			'recipient_email'    => get_option( 'admin_email' ),
+			'subject'            => sprintf(
 				/* translators: %s: site name */
 				__( 'New message from %s', 'zontact' ),
 				wp_specialchars_decode( get_option( 'blogname' ), ENT_QUOTES )
 			),
-			'save_messages'     => false,
+			'save_messages'      => false,
 			'data_retention_days' => 30,
-			'button_position'   => 'right',
-			'accent_color'      => '#2563eb',
-			'consent_text'      => __(
+			'button_position'    => 'right',
+			'accent_color'       => '#2563eb',
+			'consent_text'       => __(
 				'I agree to the processing of my personal data (name, email, message) for the purpose of responding to my inquiry. This data will be stored securely and not shared with third parties.',
 				'zontact'
 			),
-			'success_message'   => __( 'Thanks! Your message has been sent.', 'zontact' ),
+			'success_message'    => __( 'Thanks! Your message has been sent.', 'zontact' ),
 		);
 
 		/**
@@ -73,6 +74,8 @@ class Options {
 	public static function sanitize( array $input ): array {
 		$defaults = self::defaults();
 		$output   = array();
+
+		$output['enable_button']     = ! empty( $input['enable_button'] );
 
 		$output['recipient_email']   = isset( $input['recipient_email'] )
 			? sanitize_email( $input['recipient_email'] )

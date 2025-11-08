@@ -29,9 +29,15 @@ final class Frontend {
 	 * @return void
 	 */
 	public function render_form(): void {
-		$opts          = Options::get();
+		$opts = Options::get();
+
+		// Check if button is enabled.
+		if ( empty( $opts['enable_button'] ) ) {
+			return;
+		}
+
 		$position_class = ( 'left' === $opts['button_position'] ) ? 'zontact-left' : 'zontact-right';
-		$accent = $opts['accent_color'];
+		$accent         = $opts['accent_color'];
 		$consent_text   = trim( zontact_sanitize_html( $opts['consent_text'] ) );
 
 		?>

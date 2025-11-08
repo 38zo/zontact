@@ -34,6 +34,11 @@ final class Assets {
 	public function enqueue(): void {
 		$options = Options::get();
 
+		// Only enqueue if button is enabled.
+		if ( empty( $options['enable_button'] ) ) {
+			return;
+		}
+
 		wp_enqueue_style(
 			'zontact',
 			ZONTACT_URL . 'assets/css/zontact.css',
@@ -72,6 +77,12 @@ final class Assets {
 	 */
 	public function add_inline_styles(): void {
 		$options = Options::get();
+
+		// Only add styles if button is enabled.
+		if ( empty( $options['enable_button'] ) ) {
+			return;
+		}
+
 		$accent  = ! empty( $options['accent_color'] ) ? esc_attr( $options['accent_color'] ) : '#0073aa';
 
 		wp_add_inline_style(
