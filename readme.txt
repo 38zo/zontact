@@ -1,5 +1,6 @@
 === Zontact ===
 Contributors: 38zo, lewisushindi
+Donate link: https://ko-fi.com/lewis38zo
 Tags: contact form, floating button, modal, accessibility, contact
 Requires at least: 6.0
 Tested up to: 6.8
