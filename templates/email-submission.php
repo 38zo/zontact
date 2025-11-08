@@ -35,9 +35,9 @@ $submitted   = isset( $email_data['submitted_at'] ) ? esc_html( $email_data['sub
     <div class="container">
         <h1><?php echo esc_html__( 'You have a new message', 'zontact' ); ?></h1>
         <div class="meta">
-            <p><strong><?php esc_html_e( 'Name:', 'zontact' ); ?></strong> <?php echo $name; ?></p>
-            <p><strong><?php esc_html_e( 'Email:', 'zontact' ); ?></strong> <?php echo $email; ?></p>
-            <p><strong><?php esc_html_e( 'Submitted:', 'zontact' ); ?></strong> <?php echo $submitted; ?></p>
+            <p><strong><?php esc_html_e( 'Name:', 'zontact' ); ?></strong> <?php echo esc_html( $name ); ?></p>
+            <p><strong><?php esc_html_e( 'Email:', 'zontact' ); ?></strong> <?php echo esc_html( $email ); ?></p>
+            <p><strong><?php esc_html_e( 'Submitted:', 'zontact' ); ?></strong> <?php echo esc_html( $submitted ); ?></p>
         </div>
         <div class="message">
             <strong><?php esc_html_e( 'Message', 'zontact' ); ?></strong>
