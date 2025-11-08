@@ -26,20 +26,15 @@ Zontact provides a simple, elegant floating contact button that opens an accessi
 * **Admin Interface** - View and manage submitted messages from WordPress admin
 * **Translation Ready** - Fully prepared for internationalization
 
-= Perfect For =
-
-* Business websites needing quick contact options
-* Portfolio sites wanting minimal contact solutions
-* Blogs requiring simple visitor communication
-* Any site prioritizing clean, uncluttered design
-
 = Accessibility Features =
 
-* Full ARIA support for screen readers
-* Keyboard navigation support
-* Focus management
-* Semantic HTML structure
-* WCAG compliant design
+Zontact is built with accessibility in mind from the ground up. Every element in the contact form and modal is designed to work for all users, including those using assistive technologies.
+
+* Proper ARIA labels and roles for screen readers
+* Smooth keyboard navigation
+* Automatic focus management when opening and closing the modal
+* Clean, semantic HTML structure
+* Follows core WordPress and WCAG accessibility guidelines
 
 == Installation ==
 
