@@ -154,7 +154,7 @@ class Settings {
 			'title'   => __( 'Save Messages', 'zontact' ),
 			'desc'    => __( 'Store form submissions in the database. This allows you to view and manage submissions from the Entries page.', 'zontact' ),
 			'type'    => 'checkbox',
-			'default' => false,
+			'default' => true,
 			'tab'     => 'storage',
 			'section' => __( 'Database Storage', 'zontact' ),
 		);

@@ -135,7 +135,6 @@ final class Plugin {
 	 */
 	public function register_admin_settings(): void {
 		Settings::register();
-		( new EntriesPage() )->register();
 	}
 
 	/**

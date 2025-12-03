@@ -34,15 +34,6 @@ final class EntriesPage {
 	}
 
 	/**
-	 * Register submenu.
-	 *
-	 * @return void
-	 */
-	public function register(): void {
-		// No longer needed – handled directly by Plugin class.
-	}
-
-	/**
 	 * Add submenu page under Zontact.
 	 *
 	 * @return void

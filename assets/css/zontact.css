@@ -1,19 +1,92 @@
-.zontact-root{position:fixed;bottom:16px;z-index:999999}
-.zontact-right{right:16px}
-.zontact-left{left:16px}
-.zontact-button{background:var(--zontact-accent,#2563eb);color:#fff;border:none;border-radius:9999px;padding:10px 14px;font-size:13px;box-shadow:0 4px 12px rgba(0,0,0,.15);cursor:pointer;font-weight:500}
-.zontact-button:hover{filter:brightness(0.95);transform:translateY(-1px)}
-.zontact-button:focus{outline:2px solid #000;outline-offset:2px}
+.zontact-root{
+	position:fixed;
+	bottom:16px;
+	z-index:999999;
+}
+.zontact-right{
+	right:16px;
+}
+.zontact-left{
+	left:16px;
+}
+.zontact-button{
+	background:var(--zontact-accent,#2563eb);
+	color:#fff;
+	border:none;
+	border-radius:9999px;
+	padding:10px 14px;
+	font-size:13px;
+	box-shadow:0 4px 12px rgba(0,0,0,.15);
+	cursor:pointer;
+	font-weight:500;
+}
+.zontact-button:hover{
+	filter:brightness(0.95);
+	transform:translateY(-1px);
+}
+.zontact-button:focus{
+	outline:2px solid #000;
+	outline-offset:2px;
+}
 
 /* Modal shell */
-.zontact-modal[aria-hidden="true"]{display:none}
-.zontact-modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:20px}
-.zontact-modal__overlay{position:absolute;inset:0;background:rgba(0,0,0,.5)}
-.zontact-modal__dialog{position:relative;background:#fff;color:#111;max-width:480px;width:100%;border-radius:8px;box-shadow:0 10px 25px rgba(0,0,0,.2);display:flex;flex-direction:column;max-height:90vh;overflow:hidden}
-.zontact-modal__header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid #e5e7eb;flex-shrink:0}
-.zontact-modal__header h2{margin:0;font-size:18px;font-weight:600;color:#111}
-.zontact-close{background:transparent;border:none;font-size:20px;line-height:1;cursor:pointer;color:#6b7280;padding:4px;border-radius:4px}
-.zontact-close:hover{background:#f3f4f6;color:#374151}
+.zontact-modal[aria-hidden="true"]{
+	display:none
+}
+.zontact-modal{
+	position:fixed;
+	inset:0;
+	display:flex;
+	align-items:center;
+	justify-content:center;
+	padding:20px;
+}
+.zontact-modal__overlay{
+	position:absolute;
+	inset:0;
+	background:rgba(0,0,0,.5);
+}
+.zontact-modal__dialog{
+	position:relative;
+	background:#fff;
+	color:#111;
+	max-width:480px;
+	width:100%;
+	border-radius:8px;
+	box-shadow:0 10px 25px rgba(0,0,0,.2);
+	display:flex;
+	flex-direction:column;
+	max-height:90vh;
+	overflow:hidden;
+}
+.zontact-modal__header{
+	display:flex;
+	align-items:center;
+	justify-content:space-between;
+	padding:16px 20px;
+	border-bottom:1px solid #e5e7eb;
+	flex-shrink:0;
+}
+.zontact-modal__header h2{
+	margin:0;
+	font-size:18px;
+	font-weight:600;
+	color:#111;
+}
+.zontact-close{
+	background:transparent;
+	border:none;
+	font-size:20px;
+	line-height:1;
+	cursor:pointer;
+	color:#6b7280;
+	padding:4px;
+	border-radius:4px;
+}
+.zontact-close:hover{
+	background:#f3f4f6;
+	color:#374151;
+}
 
 /* Form layout */
 .zontact-form{flex:1;display:flex;flex-direction:column;overflow:hidden}

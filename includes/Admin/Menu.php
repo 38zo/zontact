@@ -26,8 +26,9 @@ final class Menu {
 	 * @return void
 	 */
 	public static function add_menus(): void {
-		$menu_title = zontact_plugin_name();
-		$menu_slug = zontact_top_level_menu_slug();
+		$menu_title    = zontact_plugin_name();
+		$menu_slug     = zontact_top_level_menu_slug();
+		$menu_dashicon = zontact_plugin_dashicon();
 
 		add_menu_page(
 			$menu_title,               // Page title.
@@ -35,7 +36,7 @@ final class Menu {
 			'manage_options',          // Capability.
 			$menu_slug,                 // Menu slug.
 			[ __CLASS__, 'render_welcome_page' ], // Callback.
-			'dashicons-email-alt2',    // Icon.
+			$menu_dashicon,    // Icon.
 			58                         // Position.
 		);
 

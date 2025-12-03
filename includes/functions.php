@@ -18,6 +18,13 @@ function zontact_plugin_name() {
 }
 
 /**
+ * Returns the dashicon of the plugin.
+ */
+function zontact_plugin_dashicon() {
+    return apply_filters( 'zontact_plugin_dashicon', 'dashicons-email-alt2' );
+}
+
+/**
  * Returns the top level menu slug for the plugin.
  * @return string
  */

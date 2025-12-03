@@ -30,7 +30,7 @@ class Options {
 				__( 'New message from %s', 'zontact' ),
 				wp_specialchars_decode( get_option( 'blogname' ), ENT_QUOTES )
 			),
-			'save_messages'      => false,
+			'save_messages'      => true,
 			'data_retention_days' => 30,
 			'button_position'    => 'right',
 			'accent_color'       => '#2563eb',
