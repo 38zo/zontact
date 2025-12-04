@@ -70,7 +70,10 @@ final class Frontend {
 			>
 				<?php if ( 'label-only' !== $display_mode ) : ?>
 					<span class="zontact-button-icon">
-						<?php echo $this->render_icon( $button_icon, $opts['button_icon_size'] ?? 20 ); ?>
+						<?php
+						$icon_size = isset( $opts['button_icon_size'] ) ? absint( $opts['button_icon_size'] ) : 20;
+						echo wp_kses( $this->render_icon( $button_icon, $icon_size ), $this->get_allowed_svg_tags() );
+						?>
 					</span>
 				<?php endif; ?>
 				<?php if ( 'icon-only' !== $display_mode ) : ?>
@@ -222,5 +225,44 @@ final class Frontend {
 		}
 
 		return $svg;
+	}
+
+	/**
+	 * Get allowed HTML tags for SVG icons.
+	 *
+	 * @return array Allowed HTML tags and attributes.
+	 */
+	private function get_allowed_svg_tags(): array {
+		return array(
+			'svg'    => array(
+				'width'       => true,
+				'height'      => true,
+				'viewbox'     => true,
+				'viewBox'     => true,
+				'fill'        => true,
+				'aria-hidden' => true,
+				'class'       => true,
+				'xmlns'       => true,
+			),
+			'path'   => array(
+				'd'           => true,
+				'fill'        => true,
+				'stroke'      => true,
+				'stroke-width' => true,
+			),
+			'circle' => array(
+				'cx'    => true,
+				'cy'    => true,
+				'r'     => true,
+				'fill'  => true,
+			),
+			'rect'   => array(
+				'x'      => true,
+				'y'      => true,
+				'width'  => true,
+				'height' => true,
+				'fill'   => true,
+			),
+		);
 	}
 }

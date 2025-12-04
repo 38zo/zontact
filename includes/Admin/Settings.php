@@ -516,8 +516,19 @@ class Settings {
 
 				<?php if ( isset( $grouped[ $active_tab ] ) ) : ?>
 					<?php foreach ( $grouped[ $active_tab ] as $section_name => $section_settings ) : ?>
-						<div class="zontact-settings-section">
-							<h2><?php echo esc_html( $section_name ); ?></h2>
+						<?php
+						// Check if all fields in this section are conditional
+						$all_conditional = true;
+						foreach ( $section_settings as $setting ) {
+							if ( ! isset( $setting['conditional'] ) ) {
+								$all_conditional = false;
+								break;
+							}
+						}
+						$section_class = $all_conditional ? 'zontact-section-all-conditional' : '';
+						?>
+						<div class="zontact-settings-section <?php echo esc_attr( $section_class ); ?>">
+							<h2 class="zontact-section-title"><?php echo esc_html( $section_name ); ?></h2>
 							<table class="form-table" role="presentation">
 								<tbody>
 									<?php foreach ( $section_settings as $setting ) : ?>
@@ -586,6 +597,12 @@ class Settings {
 			.zontact-conditional-field.zontact-field-visible {
 				display: table-row;
 			}
+			.zontact-section-all-conditional {
+				display: none;
+			}
+			.zontact-section-all-conditional.zontact-section-visible {
+				display: block;
+			}
 		</style>
 		<script>
 		(function() {
@@ -613,6 +630,16 @@ class Settings {
 						row.classList.add('zontact-field-visible');
 					} else {
 						row.classList.remove('zontact-field-visible');
+					}
+				});
+				
+				// Update section titles visibility
+				document.querySelectorAll('.zontact-section-all-conditional').forEach(function(section) {
+					var visibleFields = section.querySelectorAll('.zontact-conditional-field.zontact-field-visible');
+					if (visibleFields.length > 0) {
+						section.classList.add('zontact-section-visible');
+					} else {
+						section.classList.remove('zontact-section-visible');
 					}
 				});
 			}
