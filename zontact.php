@@ -3,7 +3,7 @@
  * Plugin Name:       Zontact
  * Plugin URI:        https://github.com/38zo/zontact
  * Description:       One button, one form, zero hassle. Floating contact button opens an accessible modal with a contact form.
- * Version:           1.0.8
+ * Version:           1.0.9
  * Author:            38zo
  * Author URI:        https://github.com/38zo
  * Text Domain:       zontact
