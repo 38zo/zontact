@@ -89,6 +89,138 @@ class Settings {
 
 		//endregion General
 
+		//region Button Tab
+		$tabs['button'] = __( 'Button', 'zontact' );
+
+		$settings[] = array(
+			'id'      => 'button_label',
+			'title'   => __( 'Button Label', 'zontact' ),
+			'desc'    => __( 'Text displayed on the contact button.', 'zontact' ),
+			'type'    => 'text',
+			'default' => __( 'Contact', 'zontact' ),
+			'tab'     => 'button',
+			'section' => __( 'Label & Display', 'zontact' ),
+		);
+
+		$settings[] = array(
+			'id'      => 'button_display_mode',
+			'title'   => __( 'Display Mode', 'zontact' ),
+			'desc'    => __( 'Choose what to display on the button: icon only, label only, or both.', 'zontact' ),
+			'type'    => 'select',
+			'choices' => array(
+				'icon-only'  => __( 'Icon Only', 'zontact' ),
+				'label-only' => __( 'Label Only', 'zontact' ),
+				'both'       => __( 'Icon & Label', 'zontact' ),
+			),
+			'default' => 'both',
+			'tab'     => 'button',
+			'section' => __( 'Label & Display', 'zontact' ),
+		);
+
+		$settings[] = array(
+			'id'            => 'button_icon',
+			'title'         => __( 'Button Icon', 'zontact' ),
+			'desc'          => __( 'Choose an icon to display on the button. Icons use simple SVG shapes.', 'zontact' ),
+			'type'          => 'select',
+			'choices'       => array(
+				'message'  => __( 'Message Bubble', 'zontact' ),
+				'chat'     => __( 'Chat', 'zontact' ),
+				'mail'     => __( 'Mail', 'zontact' ),
+				'phone'    => __( 'Phone', 'zontact' ),
+				'comment'  => __( 'Comment', 'zontact' ),
+				'help'     => __( 'Help/Question', 'zontact' ),
+				'pencil'   => __( 'Pencil/Edit', 'zontact' ),
+				'plus'     => __( 'Plus', 'zontact' ),
+			),
+			'default'       => 'message',
+			'tab'           => 'button',
+			'section'       => __( 'Icon Settings', 'zontact' ),
+			'conditional'   => array(
+				'field'   => 'button_display_mode',
+				'values'  => array( 'icon-only', 'both' ),
+			),
+		);
+
+		$settings[] = array(
+			'id'            => 'button_icon_size',
+			'title'         => __( 'Icon Size (px)', 'zontact' ),
+			'desc'          => __( 'Size of the icon in pixels (12-48px).', 'zontact' ),
+			'type'          => 'number',
+			'default'       => 20,
+			'min'           => 12,
+			'max'           => 48,
+			'tab'           => 'button',
+			'section'       => __( 'Icon Settings', 'zontact' ),
+			'conditional'   => array(
+				'field'   => 'button_display_mode',
+				'values'  => array( 'icon-only', 'both' ),
+			),
+		);
+
+		$settings[] = array(
+			'id'      => 'button_size',
+			'title'   => __( 'Button Size', 'zontact' ),
+			'desc'    => __( 'Predefined button sizes or use custom padding.', 'zontact' ),
+			'type'    => 'select',
+			'choices' => array(
+				'small'  => __( 'Small', 'zontact' ),
+				'medium' => __( 'Medium', 'zontact' ),
+				'large'  => __( 'Large', 'zontact' ),
+				'custom' => __( 'Custom', 'zontact' ),
+			),
+			'default' => 'medium',
+			'tab'     => 'button',
+			'section' => __( 'Size & Spacing', 'zontact' ),
+		);
+
+		$settings[] = array(
+			'id'            => 'button_custom_size',
+			'title'         => __( 'Custom Padding', 'zontact' ),
+			'desc'          => __( 'Custom padding (e.g., "10px 16px" for top/bottom and left/right). Only used when Button Size is set to Custom.', 'zontact' ),
+			'type'          => 'text',
+			'default'       => '',
+			'tab'           => 'button',
+			'section'       => __( 'Size & Spacing', 'zontact' ),
+			'conditional'   => array(
+				'field'   => 'button_size',
+				'values'  => array( 'custom' ),
+			),
+		);
+
+		$settings[] = array(
+			'id'      => 'button_bg_color',
+			'title'   => __( 'Background Color', 'zontact' ),
+			'desc'    => __( 'Button background color. Leave empty to use the Accent Color from General settings.', 'zontact' ),
+			'type'    => 'color',
+			'default' => '',
+			'tab'     => 'button',
+			'section' => __( 'Colors', 'zontact' ),
+		);
+
+		$settings[] = array(
+			'id'      => 'button_text_color',
+			'title'   => __( 'Text Color', 'zontact' ),
+			'desc'    => __( 'Color of the button text and icon.', 'zontact' ),
+			'type'    => 'color',
+			'default' => '#ffffff',
+			'tab'     => 'button',
+			'section' => __( 'Colors', 'zontact' ),
+		);
+
+		$settings[] = array(
+			'id'      => 'button_border_radius',
+			'title'   => __( 'Border Radius (px)', 'zontact' ),
+			'desc'    => __( 'Roundness of button corners. Use a large value (like 9999) for fully rounded (pill shape).', 'zontact' ),
+			'type'    => 'number',
+			'default' => 9999,
+			'min'     => 0,
+			'max'     => 9999,
+			'tab'     => 'button',
+			'section' => __( 'Colors', 'zontact' ),
+		);
+
+		//endregion Button
+
 		//region Email Tab
 		$tabs['email'] = __( 'Email', 'zontact' );
 
@@ -236,8 +368,9 @@ class Settings {
 					esc_attr( $name )
 				);
 				printf(
-					'<label><input type="checkbox" name="%1$s" value="1" %2$s> %3$s</label>',
+					'<label><input type="checkbox" name="%1$s" id="%2$s" value="1" %3$s> %4$s</label>',
 					esc_attr( $name ),
+					esc_attr( 'zontact_options_' . $id ),
 					wp_kses_post( $checked ),
 					esc_html( $desc )
 				);
@@ -245,7 +378,11 @@ class Settings {
 
 			case 'select':
 				$choices = $setting['choices'] ?? array();
-				echo '<select name="' . esc_attr( $name ) . '">';
+				printf(
+					'<select name="%1$s" id="%2$s">',
+					esc_attr( $name ),
+					esc_attr( 'zontact_options_' . $id )
+				);
 				foreach ( $choices as $choice_value => $choice_label ) {
 					printf(
 						'<option value="%1$s" %2$s>%3$s</option>',
@@ -273,8 +410,9 @@ class Settings {
 
 			case 'number':
 				printf(
-					'<input type="number" class="small-text" name="%1$s" value="%2$s"%3$s>',
+					'<input type="number" class="small-text" name="%1$s" id="%2$s" value="%3$s"%4$s>',
 					esc_attr( $name ),
+					esc_attr( 'zontact_options_' . $id ),
 					esc_attr( $value ),
 					wp_kses_post( $attrs_str )
 				);
@@ -285,8 +423,9 @@ class Settings {
 
 			case 'color':
 				printf(
-					'<input type="color" name="%1$s" value="%2$s" class="zontact-color-picker">',
+					'<input type="color" name="%1$s" id="%2$s" value="%3$s" class="zontact-color-picker">',
 					esc_attr( $name ),
+					esc_attr( 'zontact_options_' . $id ),
 					esc_attr( $value )
 				);
 				if ( $desc ) {
@@ -299,9 +438,10 @@ class Settings {
 			default:
 				$input_type = ( 'email' === $type ) ? 'email' : 'text';
 				printf(
-					'<input type="%1$s" class="regular-text" name="%2$s" value="%3$s">',
+					'<input type="%1$s" class="regular-text" name="%2$s" id="%3$s" value="%4$s">',
 					esc_attr( $input_type ),
 					esc_attr( $name ),
+					esc_attr( 'zontact_options_' . $id ),
 					esc_attr( $value )
 				);
 				if ( $desc ) {
@@ -384,8 +524,22 @@ class Settings {
 										<?php
 										$setting_id = $setting['id'];
 										$value      = isset( $options[ $setting_id ] ) ? $options[ $setting_id ] : ( $setting['default'] ?? '' );
+										$conditional = isset( $setting['conditional'] ) ? $setting['conditional'] : null;
+										$row_class = '';
+										$row_attrs = '';
+										
+										if ( $conditional ) {
+											$row_class = 'zontact-conditional-field';
+											$depends_on = 'zontact_options_' . esc_attr( $conditional['field'] );
+											$depends_values = is_array( $conditional['values'] ) ? implode( ',', array_map( 'esc_attr', $conditional['values'] ) ) : esc_attr( $conditional['values'] );
+											$row_attrs = sprintf(
+												' data-depends-on="%s" data-depends-values="%s"',
+												esc_attr( $depends_on ),
+												esc_attr( $depends_values )
+											);
+										}
 										?>
-										<tr>
+										<tr class="<?php echo esc_attr( $row_class ); ?>"<?php echo wp_kses_post( $row_attrs ); ?>>
 											<th scope="row">
 												<label for="zontact_options_<?php echo esc_attr( $setting_id ); ?>">
 													<?php echo esc_html( $setting['title'] ); ?>
@@ -426,7 +580,63 @@ class Settings {
 				border-radius: 3px;
 				cursor: pointer;
 			}
+			.zontact-conditional-field {
+				display: none;
+			}
+			.zontact-conditional-field.zontact-field-visible {
+				display: table-row;
+			}
 		</style>
+		<script>
+		(function() {
+			function updateConditionalFields() {
+				document.querySelectorAll('.zontact-conditional-field').forEach(function(row) {
+					var dependsOn = row.getAttribute('data-depends-on');
+					var dependsValues = row.getAttribute('data-depends-values');
+					
+					if (!dependsOn || !dependsValues) return;
+					
+					var field = document.getElementById(dependsOn);
+					if (!field) return;
+					
+					var fieldValue = '';
+					if (field.type === 'checkbox') {
+						fieldValue = field.checked ? '1' : '0';
+					} else {
+						fieldValue = field.value || '';
+					}
+					
+					var allowedValues = dependsValues.split(',').map(function(v) { return v.trim(); });
+					var shouldShow = allowedValues.indexOf(fieldValue) !== -1 || allowedValues.indexOf(String(fieldValue)) !== -1;
+					
+					if (shouldShow) {
+						row.classList.add('zontact-field-visible');
+					} else {
+						row.classList.remove('zontact-field-visible');
+					}
+				});
+			}
+			
+			function initConditionalFields() {
+				// Initial check
+				updateConditionalFields();
+				
+				// Update when dependent fields change
+				document.querySelectorAll('[id^="zontact_options_"]').forEach(function(field) {
+					field.addEventListener('change', updateConditionalFields);
+					if (field.type === 'checkbox') {
+						field.addEventListener('change', updateConditionalFields);
+					}
+				});
+			}
+			
+			if (document.readyState === 'loading') {
+				document.addEventListener('DOMContentLoaded', initConditionalFields);
+			} else {
+				initConditionalFields();
+			}
+		})();
+		</script>
 		<?php
 	}
 }

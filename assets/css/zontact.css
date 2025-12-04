@@ -10,15 +10,20 @@
 	left:16px;
 }
 .zontact-button{
-	background:var(--zontact-accent,#2563eb);
-	color:#fff;
+	background:var(--zontact-button-bg,var(--zontact-accent,#2563eb));
+	color:var(--zontact-button-text,#fff);
 	border:none;
-	border-radius:9999px;
+	border-radius:var(--zontact-button-radius,9999px);
 	padding:10px 14px;
 	font-size:13px;
 	box-shadow:0 4px 12px rgba(0,0,0,.15);
 	cursor:pointer;
 	font-weight:500;
+	display:inline-flex;
+	align-items:center;
+	justify-content:center;
+	gap:6px;
+	transition:all 0.2s ease;
 }
 .zontact-button:hover{
 	filter:brightness(0.95);
@@ -27,6 +32,44 @@
 .zontact-button:focus{
 	outline:2px solid #000;
 	outline-offset:2px;
+}
+
+/* Button sizes */
+.zontact-button-size-small{
+	padding:6px 10px;
+	font-size:12px;
+}
+.zontact-button-size-medium{
+	padding:10px 14px;
+	font-size:13px;
+}
+.zontact-button-size-large{
+	padding:14px 20px;
+	font-size:15px;
+}
+
+/* Display modes */
+.zontact-button-mode-icon-only .zontact-button-label{
+	display:none;
+}
+.zontact-button-mode-label-only .zontact-button-icon{
+	display:none;
+}
+.zontact-button-mode-both{
+	gap:6px;
+}
+
+/* Icon styling */
+.zontact-button-icon{
+	display:inline-flex;
+	align-items:center;
+	justify-content:center;
+	flex-shrink:0;
+}
+.zontact-button-icon svg{
+	width:var(--zontact-icon-size,20px);
+	height:var(--zontact-icon-size,20px);
+	display:block;
 }
 
 /* Modal shell */

@@ -83,11 +83,44 @@ final class Assets {
 			return;
 		}
 
-		$accent  = ! empty( $options['accent_color'] ) ? esc_attr( $options['accent_color'] ) : '#0073aa';
+		$accent   = ! empty( $options['accent_color'] ) ? esc_attr( $options['accent_color'] ) : '#2563eb';
+		$css_vars = array( "--zontact-accent: {$accent};" );
 
-		wp_add_inline_style(
-			'zontact',
-			":root { --zontact-accent: {$accent}; }"
-		);
+		// Button customization CSS variables
+		$button_bg_color = ! empty( $options['button_bg_color'] ) ? esc_attr( $options['button_bg_color'] ) : $accent;
+		$button_text_color = ! empty( $options['button_text_color'] ) ? esc_attr( $options['button_text_color'] ) : '#ffffff';
+		$button_border_radius = ! empty( $options['button_border_radius'] ) ? (int) $options['button_border_radius'] : 9999;
+		$button_icon_size = ! empty( $options['button_icon_size'] ) ? (int) $options['button_icon_size'] : 20;
+
+		$css_vars[] = "--zontact-button-bg: {$button_bg_color};";
+		$css_vars[] = "--zontact-button-text: {$button_text_color};";
+		$css_vars[] = "--zontact-button-radius: {$button_border_radius}px;";
+		$css_vars[] = "--zontact-icon-size: {$button_icon_size}px;";
+
+		// Generate button size CSS
+		$button_size = ! empty( $options['button_size'] ) ? $options['button_size'] : 'medium';
+		$custom_padding = ! empty( $options['button_custom_size'] ) ? esc_attr( $options['button_custom_size'] ) : '';
+
+		$size_css = '';
+		if ( 'custom' === $button_size && ! empty( $custom_padding ) ) {
+			$size_css = ".zontact-button { padding: {$custom_padding} !important; }";
+		}
+
+		// Generate dynamic CSS
+		$css = ":root { " . implode( ' ', $css_vars ) . " }";
+		if ( ! empty( $size_css ) ) {
+			$css .= ' ' . $size_css;
+		}
+
+		/**
+		 * Filter inline CSS styles before output.
+		 * Allows extensions to modify or add CSS.
+		 *
+		 * @param string $css     CSS string.
+		 * @param array  $options Current plugin options.
+		 */
+		$css = apply_filters( 'zontact_inline_css', $css, $options );
+
+		wp_add_inline_style( 'zontact', $css );
 	}
 }

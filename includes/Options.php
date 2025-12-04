@@ -23,22 +23,31 @@ class Options {
 	 */
 	public static function defaults(): array {
 		$defaults = array(
-			'enable_button'      => true,
-			'recipient_email'    => get_option( 'admin_email' ),
-			'subject'            => sprintf(
+			'enable_button'         => true,
+			'recipient_email'       => get_option( 'admin_email' ),
+			'subject'               => sprintf(
 				/* translators: %s: site name */
 				__( 'New message from %s', 'zontact' ),
 				wp_specialchars_decode( get_option( 'blogname' ), ENT_QUOTES )
 			),
-			'save_messages'      => true,
-			'data_retention_days' => 30,
-			'button_position'    => 'right',
-			'accent_color'       => '#2563eb',
-			'consent_text'       => __(
+			'save_messages'         => true,
+			'data_retention_days'   => 30,
+			'button_position'       => 'right',
+			'accent_color'          => '#2563eb',
+			'button_label'          => __( 'Contact', 'zontact' ),
+			'button_display_mode'   => 'both', // 'icon-only', 'label-only', 'both'
+			'button_icon'           => 'message', // Default icon name
+			'button_icon_size'      => 20, // Icon size in pixels
+			'button_size'           => 'medium', // 'small', 'medium', 'large', 'custom'
+			'button_custom_size'    => '', // Custom size for padding
+			'button_bg_color'       => '', // Empty uses accent_color
+			'button_text_color'     => '#ffffff',
+			'button_border_radius'  => 9999, // Large value for fully rounded (pill shape)
+			'consent_text'          => __(
 				'I agree to the processing of my personal data (name, email, message) for the purpose of responding to my inquiry. This data will be stored securely and not shared with third parties.',
 				'zontact'
 			),
-			'success_message'    => __( 'Thanks! Your message has been sent.', 'zontact' ),
+			'success_message'       => __( 'Thanks! Your message has been sent.', 'zontact' ),
 		);
 
 		/**
@@ -123,6 +132,47 @@ class Options {
 
 		if ( isset( $input['success_message'] ) ) {
 			$output['success_message'] = zontact_sanitize_html( $input['success_message'] );
+		}
+
+		// Button customization settings
+		if ( isset( $input['button_label'] ) ) {
+			$output['button_label'] = sanitize_text_field( $input['button_label'] );
+		}
+
+		if ( isset( $input['button_display_mode'] ) ) {
+			$output['button_display_mode'] = in_array( $input['button_display_mode'], array( 'icon-only', 'label-only', 'both' ), true )
+				? $input['button_display_mode']
+				: $defaults['button_display_mode'];
+		}
+
+		if ( isset( $input['button_icon'] ) ) {
+			$output['button_icon'] = sanitize_text_field( $input['button_icon'] );
+		}
+
+		if ( isset( $input['button_icon_size'] ) ) {
+			$output['button_icon_size'] = max( 12, min( 48, (int) $input['button_icon_size'] ) );
+		}
+
+		if ( isset( $input['button_size'] ) ) {
+			$output['button_size'] = in_array( $input['button_size'], array( 'small', 'medium', 'large', 'custom' ), true )
+				? $input['button_size']
+				: $defaults['button_size'];
+		}
+
+		if ( isset( $input['button_custom_size'] ) ) {
+			$output['button_custom_size'] = sanitize_text_field( $input['button_custom_size'] );
+		}
+
+		if ( isset( $input['button_bg_color'] ) ) {
+			$output['button_bg_color'] = preg_replace( '/[^#a-fA-F0-9]/', '', (string) $input['button_bg_color'] );
+		}
+
+		if ( isset( $input['button_text_color'] ) ) {
+			$output['button_text_color'] = preg_replace( '/[^#a-fA-F0-9]/', '', (string) $input['button_text_color'] );
+		}
+
+		if ( isset( $input['button_border_radius'] ) ) {
+			$output['button_border_radius'] = max( 0, min( 9999, (int) $input['button_border_radius'] ) );
 		}
 
 		return $output;
