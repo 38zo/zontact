@@ -73,39 +73,57 @@ class Options {
 	 */
 	public static function sanitize( array $input ): array {
 		$defaults = self::defaults();
-		$output   = array();
+		// Get existing options to preserve settings from other tabs
+		$existing = get_option( 'zontact_options', array() );
+		if ( ! is_array( $existing ) ) {
+			$existing = array();
+		}
+		// Merge with defaults to ensure all keys exist
+		$existing = array_merge( $defaults, $existing );
+		$output   = $existing;
 
-		$output['enable_button']     = ! empty( $input['enable_button'] );
+		// Only update fields that are present in the input (from current tab)
+		if ( isset( $input['enable_button'] ) ) {
+			// Handle checkbox: normalize value (may be array if both hidden and checkbox submitted)
+			$value = is_array( $input['enable_button'] ) ? end( $input['enable_button'] ) : $input['enable_button'];
+			$output['enable_button'] = ( '1' === $value || 1 === $value || true === $value );
+		}
 
-		$output['recipient_email']   = isset( $input['recipient_email'] )
-			? sanitize_email( $input['recipient_email'] )
-			: $defaults['recipient_email'];
+		if ( isset( $input['recipient_email'] ) ) {
+			$output['recipient_email'] = sanitize_email( $input['recipient_email'] );
+		}
 
-		$output['subject']           = isset( $input['subject'] )
-			? zontact_sanitize_html( $input['subject'] )
-			: $defaults['subject'];
+		if ( isset( $input['subject'] ) ) {
+			$output['subject'] = zontact_sanitize_html( $input['subject'] );
+		}
 
-		$output['save_messages']     = ! empty( $input['save_messages'] );
+		if ( isset( $input['save_messages'] ) ) {
+			// Handle checkbox: normalize value (may be array if both hidden and checkbox submitted)
+			$value = is_array( $input['save_messages'] ) ? end( $input['save_messages'] ) : $input['save_messages'];
+			$output['save_messages'] = ( '1' === $value || 1 === $value || true === $value );
+		}
 
-		$output['data_retention_days'] = isset( $input['data_retention_days'] )
-			? max( 1, (int) $input['data_retention_days'] )
-			: $defaults['data_retention_days'];
+		if ( isset( $input['data_retention_days'] ) ) {
+			$output['data_retention_days'] = max( 1, (int) $input['data_retention_days'] );
+		}
 
-		$output['button_position']   = in_array( $input['button_position'] ?? '', array( 'left', 'right' ), true )
-			? $input['button_position']
-			: $defaults['button_position'];
+		if ( isset( $input['button_position'] ) ) {
+			$output['button_position'] = in_array( $input['button_position'], array( 'left', 'right' ), true )
+				? $input['button_position']
+				: $defaults['button_position'];
+		}
 
-		$output['accent_color']      = isset( $input['accent_color'] )
-			? preg_replace( '/[^#a-fA-F0-9]/', '', (string) $input['accent_color'] )
-			: $defaults['accent_color'];
+		if ( isset( $input['accent_color'] ) ) {
+			$output['accent_color'] = preg_replace( '/[^#a-fA-F0-9]/', '', (string) $input['accent_color'] );
+		}
 
-		$output['consent_text']      = isset( $input['consent_text'] )
-			? zontact_sanitize_html( $input['consent_text'] )
-			: $defaults['consent_text'];
+		if ( isset( $input['consent_text'] ) ) {
+			$output['consent_text'] = zontact_sanitize_html( $input['consent_text'] );
+		}
 
-		$output['success_message']   = isset( $input['success_message'] )
-			? zontact_sanitize_html( $input['success_message'] )
-			: $defaults['success_message'];
+		if ( isset( $input['success_message'] ) ) {
+			$output['success_message'] = zontact_sanitize_html( $input['success_message'] );
+		}
 
 		return $output;
 	}

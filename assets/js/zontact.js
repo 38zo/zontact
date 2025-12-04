@@ -12,8 +12,8 @@
 		
 		// Focus trap setup
 		focusableElements = qsa('input,textarea,button,[tabindex]:not([tabindex="-1"])', modal);
-		firstFocusable = focusableElements[0];
-		lastFocusable = focusableElements[focusableElements.length - 1];
+		firstFocusable    = focusableElements[0];
+		lastFocusable     = focusableElements[focusableElements.length - 1];
 		
 		// Focus first element
 		if(firstFocusable) firstFocusable.focus();

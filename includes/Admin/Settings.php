@@ -230,6 +230,11 @@ class Settings {
 		switch ( $type ) {
 			case 'checkbox':
 				$checked = checked( $value, true, false );
+				// Add hidden input to ensure unchecked checkboxes are submitted
+				printf(
+					'<input type="hidden" name="%1$s" value="0">',
+					esc_attr( $name )
+				);
 				printf(
 					'<label><input type="checkbox" name="%1$s" value="1" %2$s> %3$s</label>',
 					esc_attr( $name ),

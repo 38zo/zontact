@@ -40,7 +40,7 @@ final class EntriesPage {
 	 */
 	public function add_menu(): void {
 		$capability = 'manage_options';
-		$menu_slug = zontact_top_level_menu_slug();
+		$menu_slug  = zontact_top_level_menu_slug();
 
 		$hook = add_submenu_page(
 			$menu_slug,

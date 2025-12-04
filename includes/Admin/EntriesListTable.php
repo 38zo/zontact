@@ -137,7 +137,7 @@ final class EntriesListTable extends \WP_List_Table {
 
 	/** @inheritDoc */
 	public function prepare_items() {
-		$per_page = 30;
+		$per_page  = 30;
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$paged_raw = isset( $_GET['paged'] ) ? absint( wp_unslash( $_GET['paged'] ) ) : 1;
 
