@@ -7,6 +7,7 @@
 
 namespace ThirtyEightZo\Zontact\Admin\Settings;
 
+use ThirtyEightZo\Zontact\Admin\Settings\Tabs\Main as MainTabs;
 use ThirtyEightZo\Zontact\Options;
 
 defined( 'ABSPATH' ) || exit;
@@ -24,7 +25,7 @@ class Main {
 	 * @return array Settings array with 'tabs' and 'settings' keys.
 	 */
 	public static function get_settings(): array {
-		return Tabs::get_all();
+		return MainTabs::get_all();
 	}
 
 	/**
