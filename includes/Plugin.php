@@ -9,9 +9,9 @@ namespace ThirtyEightZo\Zontact;
 
 use ThirtyEightZo\Zontact\Database;
 use ThirtyEightZo\Zontact\Options;
-use ThirtyEightZo\Zontact\Admin\Settings;
+use ThirtyEightZo\Zontact\Admin\Settings\Register;
 use ThirtyEightZo\Zontact\Admin\Menu;
-use ThirtyEightZo\Zontact\Admin\EntriesPage;
+use ThirtyEightZo\Zontact\Admin\Entries\EntriesPage;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -134,7 +134,7 @@ final class Plugin {
 	 * @return void
 	 */
 	public function register_admin_settings(): void {
-		Settings::register();
+		Register::register();
 	}
 
 	/**

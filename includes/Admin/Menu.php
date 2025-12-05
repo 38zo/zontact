@@ -7,6 +7,7 @@
 
 namespace ThirtyEightZo\Zontact\Admin;
 
+use ThirtyEightZo\Zontact\Admin\Settings\Main as Settings;
 defined( 'ABSPATH' ) || exit;
 
 final class Menu {
@@ -47,7 +48,7 @@ final class Menu {
 			__( 'Settings', 'zontact' ),
 			'manage_options',
 			'zontact-settings',
-			[ Settings::class, 'render_settings_page' ]
+			[ Settings::class, 'render_page' ]
 		);
 
 		remove_submenu_page( zontact_top_level_menu_slug(), zontact_top_level_menu_slug() );

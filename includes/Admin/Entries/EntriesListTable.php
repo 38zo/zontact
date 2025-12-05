@@ -5,7 +5,7 @@
  * @package ThirtyEightZo\Zontact\Admin
  */
 
-namespace ThirtyEightZo\Zontact\Admin;
+namespace ThirtyEightZo\Zontact\Admin\Entries;
 
 use ThirtyEightZo\Zontact\Repository\EntryRepositoryInterface;
 

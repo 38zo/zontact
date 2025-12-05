@@ -74,6 +74,9 @@ Yes, you can view all submitted messages in the WordPress admin under Zontact > 
 
 == Changelog ==
 
+= 1.1.1 =
+* Refactor codebase with clear separation of concerns
+
 = 1.1.0 =
 * Implement Button Customization
 
