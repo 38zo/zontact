@@ -223,5 +223,3 @@ final class Database {
         return ( false !== $updated );
     }
 }
-
-

@@ -5,7 +5,7 @@ Tags: contact form, floating button, modal, accessibility, contact
 Requires at least: 6.0
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.1.0
+Stable tag: 1.1.1
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -19,7 +19,7 @@ Zontact provides a simple, elegant floating contact button that opens an accessi
 
 * **Floating Contact Button** - Clean, minimal button that floats on your site
 * **Accessible Modal** - ARIA-compliant modal dialog with keyboard navigation
-* **Customizable Design** - Choose button position (left/right) and accent color
+* **Customizable Design** - Customize button icon, background color, text color, size, shape, border radius, accent placement (left/right) and many more.
 * **Spam Protection** - Built-in honeypot field to prevent spam submissions
 * **Email Notifications** - Automatic email notifications to site administrators
 * **Message Storage** - Optional storage of contact messages in database
