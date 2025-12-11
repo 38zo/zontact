@@ -5,7 +5,7 @@ Tags: contact form, floating button, modal, accessibility, contact
 Requires at least: 6.0
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.1.1
+Stable tag: 1.1.2
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -73,6 +73,9 @@ Yes, you can view all submitted messages in the WordPress admin under Zontact > 
 4. Entries list showing submitted messages
 
 == Changelog ==
+
+= 1.1.2 =
+* Integrate Freemius SDK
 
 = 1.1.1 =
 * Refactor codebase with clear separation of concerns
