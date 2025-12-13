@@ -37,53 +37,49 @@ if ( file_exists( $functions ) ) {
 }
 
 if ( ! function_exists( 'zon_fs' ) ) {
-
+    // Create a helper function for easy SDK access.
     function zon_fs() {
         global $zon_fs;
 
-        if ( isset( $zon_fs ) ) {
-            return $zon_fs;
-        }
+        if ( ! isset( $zon_fs ) ) {
+            // Include Freemius SDK.
+            require_once ZONTACT_PATH . '/vendor/freemius/start.php';
 
-        require_once ZONTACT_PATH . '/vendor/freemius/start.php';
-
-        $zon_fs = fs_dynamic_init( array(
-            'id'                  => '21526',
-            'slug'                => 'zontact',
-            'premium_slug'        => 'zontact-pro',
-            'type'                => 'plugin',
-            'public_key'          => 'pk_f70ecbf17445436c99f4684f2d694',
-            'is_premium'          => true,
-			'premium_suffix'      => 'Pro',
-            'has_premium_version' => true,
-            'has_paid_plans'      => true,
-			'trial'               => array(
+            $zon_fs = fs_dynamic_init( array(
+                'id'                  => '21526',
+                'slug'                => 'zontact',
+                'premium_slug'        => 'zontact-pro',
+                'type'                => 'plugin',
+                'public_key'          => 'pk_f70ecbf17445436c99f4684f2d694',
+                'is_premium'          => true,
+                'premium_suffix'      => 'Pro',
+                'has_premium_version' => true,
+                'has_addons'          => false,
+                'has_paid_plans'      => true,
+                'trial'               => array(
                     'days'               => 7,
                     'is_require_payment' => false,
-            ),
-            'has_addons'          => false,
-
-            'menu' => array(
-                'slug'       => 'zontact',
-                'capability' => 'manage_options',
-            ),
-        ) );
-
-		// Init Freemius.
-		zon_fs();
-
-        do_action( 'zon_fs_loaded' );
+                ),
+                'menu'                => array(
+                    'slug'           => 'zontact',
+                ),
+            ) );
+        }
 
         return $zon_fs;
     }
-
-    add_action( 'plugins_loaded', 'zon_fs' );
 }
 
 /**
- * Bootstrap the plugin.
+ * Bootstrap the plugin with proper initialization order.
  */
 add_action( 'plugins_loaded', function () {
+	// Initialize Freemius first
+	zon_fs();
+	// Signal that SDK was initiated.
+	do_action( 'zon_fs_loaded' );
+
+	// Then bootstrap the main plugin
 	if ( class_exists( \ThirtyEightZo\Zontact\Plugin::class ) ) {
 		\ThirtyEightZo\Zontact\Plugin::instance();
 		/**
@@ -95,4 +91,4 @@ add_action( 'plugins_loaded', function () {
 		 */
 		do_action( 'Zontact_bootstrapped' );
 	}
-});
+}, 1 );
