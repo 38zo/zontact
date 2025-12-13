@@ -53,10 +53,14 @@ if ( ! function_exists( 'zon_fs' ) ) {
             'premium_slug'        => 'zontact-pro',
             'type'                => 'plugin',
             'public_key'          => 'pk_f70ecbf17445436c99f4684f2d694',
-
-            'is_premium'          => false,
+            'is_premium'          => true,
+			'premium_suffix'      => 'Pro',
             'has_premium_version' => true,
             'has_paid_plans'      => true,
+			'trial'               => array(
+                    'days'               => 7,
+                    'is_require_payment' => false,
+            ),
             'has_addons'          => false,
 
             'menu' => array(
@@ -75,7 +79,6 @@ if ( ! function_exists( 'zon_fs' ) ) {
 
     add_action( 'plugins_loaded', 'zon_fs' );
 }
-
 
 /**
  * Bootstrap the plugin.
