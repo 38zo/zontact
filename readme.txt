@@ -74,6 +74,9 @@ Yes, you can view all submitted messages in the WordPress admin under Zontact > 
 
 == Changelog ==
 
+= 1.1.2 =
+* Add Freemius Integration
+
 = 1.1.1 =
 * Refactor codebase with clear separation of concerns
 

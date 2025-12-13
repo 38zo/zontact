@@ -29,7 +29,7 @@ function zontact_plugin_dashicon() {
  * @return string
  */
 function zontact_top_level_menu_slug() {
-    return apply_filters( 'zontact_top_level_menu_slug', 'Zontact' );
+    return apply_filters( 'zontact_top_level_menu_slug', 'zontact' );
 }
 
 /**
