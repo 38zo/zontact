@@ -36,6 +36,47 @@ if ( file_exists( $functions ) ) {
 	require_once $functions;
 }
 
+if ( ! function_exists( 'zon_fs' ) ) {
+
+    function zon_fs() {
+        global $zon_fs;
+
+        if ( isset( $zon_fs ) ) {
+            return $zon_fs;
+        }
+
+        require_once ZONTACT_PATH . '/vendor/freemius/start.php';
+
+        $zon_fs = fs_dynamic_init( array(
+            'id'                  => '21526',
+            'slug'                => 'zontact',
+            'premium_slug'        => 'zontact-pro',
+            'type'                => 'plugin',
+            'public_key'          => 'pk_f70ecbf17445436c99f4684f2d694',
+
+            'is_premium'          => false,
+            'has_premium_version' => true,
+            'has_paid_plans'      => true,
+            'has_addons'          => false,
+
+            'menu' => array(
+                'slug'       => 'zontact',
+                'capability' => 'manage_options',
+            ),
+        ) );
+
+		// Init Freemius.
+		zon_fs();
+
+        do_action( 'zon_fs_loaded' );
+
+        return $zon_fs;
+    }
+
+    add_action( 'plugins_loaded', 'zon_fs' );
+}
+
+
 /**
  * Bootstrap the plugin.
  */
