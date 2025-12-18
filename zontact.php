@@ -75,9 +75,12 @@ if ( ! function_exists( 'zon_fs' ) ) {
                 ),
                 'menu'                => array(
                     'slug'           => 'zontact',
+                    'first-path'     => 'admin.php?page=zontact',
+                    'account'        => true,
                     'contact'        => false,
                     'support'        => false,
                 ),
+                'is_live'             => true,
             ) );
         }
 
@@ -88,6 +91,18 @@ if ( ! function_exists( 'zon_fs' ) ) {
     zon_fs();
     // Signal that SDK was initiated.
     do_action( 'zon_fs_loaded' );
+}
+
+/**
+ * Load Pro features if premium version is active.
+ * This entire code block will be removed from the free version.
+ */
+if ( zon_fs()->can_use_premium_code__premium_only() ) {
+    // Include Pro functions file
+    $pro_functions = ZONTACT_PATH . '/Pro/includes/functions.php';
+    if ( file_exists( $pro_functions ) ) {
+        require_once $pro_functions;
+    }
 }
 
 /**

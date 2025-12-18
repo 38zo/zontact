@@ -63,7 +63,10 @@ final class Plugin {
 			add_action( 'admin_menu', [ $this, 'register_admin_menu' ] );
 			add_action( 'admin_menu', [ $this, 'register_entries_page' ], 20 );
 			add_action( 'admin_init', [ $this, 'register_admin_settings' ] );
-		}		
+		}
+
+		// Initialize Pro features if available
+		add_action( 'init', [ $this, 'init_pro_features' ], 15 );
 
 		register_activation_hook( ZONTACT_FILE, [ __CLASS__, 'activate' ] );
 	}
@@ -74,7 +77,7 @@ final class Plugin {
 	 * @return void
 	 */
 	private function define_constants(): void {
-		$this->define( 'ZONTACT_VERSION', '1.0.0' );
+		$this->define( 'ZONTACT_VERSION', '1.1.2' );
 		$this->define( 'ZONTACT_SLUG', 'zontact' );
 		$this->define( 'ZONTACT_PATH', plugin_dir_path( ZONTACT_FILE ) );
 		$this->define( 'ZONTACT_URL', plugin_dir_url( ZONTACT_FILE ) );
@@ -126,7 +129,7 @@ final class Plugin {
 	 */
 	public function register_admin_menu(): void {
 		Menu::add_menus();
-	}	
+	}
 
 	/**
 	 * Register admin settings safely (runs only when WordPress settings API is loaded).
@@ -146,7 +149,27 @@ final class Plugin {
 	 */
 	public function register_entries_page(): void {
 		( new EntriesPage() )->add_menu();
-	}	
+	}
+
+	/**
+	 * Initialize Pro features if premium version is active.
+	 *
+	 * @return void
+	 */
+	public function init_pro_features(): void {
+		if ( function_exists( 'zon_fs' ) && zon_fs()->can_use_premium_code__premium_only() ) {
+			if ( class_exists( \ThirtyEightZo\Zontact\Pro\Pro::class ) ) {
+				\ThirtyEightZo\Zontact\Pro\Pro::instance();
+				
+				/**
+				 * Fires after Zontact Pro has been initialized.
+				 *
+				 * @since 1.1.2
+				 */
+				do_action( 'zontact_pro_loaded' );
+			}
+		}
+	}
 
 	/**
 	 * Initialize all plugin modules.
