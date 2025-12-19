@@ -27,7 +27,9 @@ class Button {
      * @return array
      */
     public static function get_settings(): array {
-        return array(
+		$is_pro = function_exists( 'zontact_is_pro' ) && zontact_is_pro();
+
+        $settings = array(
 			array(
 				'id'      => 'button_label',
 				'title'   => __( 'Button Label', 'zontact' ),
@@ -89,22 +91,37 @@ class Button {
 					'values' => array( 'icon-only', 'both' ),
 				),
 			),
-			array(
-				'id'      => 'button_size',
-				'title'   => __( 'Button Size', 'zontact' ),
-				'desc'    => __( 'Predefined button sizes or use custom padding.', 'zontact' ),
-				'type'    => 'select',
-				'choices' => array(
-					'small'  => __( 'Small', 'zontact' ),
-					'medium' => __( 'Medium', 'zontact' ),
-					'large'  => __( 'Large', 'zontact' ),
-					'custom' => __( 'Custom', 'zontact' ),
-				),
-				'default' => 'medium',
-				'tab'     => 'button',
-				'section' => __( 'Size & Spacing', 'zontact' ),
-			),
-			array(
+		);
+
+		// Button size choices - add Custom option only for Pro
+		$button_size_choices = array(
+			'small'  => __( 'Small', 'zontact' ),
+			'medium' => __( 'Medium', 'zontact' ),
+			'large'  => __( 'Large', 'zontact' ),
+		);
+
+		// Add Custom option for Pro users
+		if ( $is_pro ) {
+			$button_size_choices['custom'] = __( 'Custom', 'zontact' );
+		} else {
+			// Show as disabled for free users with upgrade prompt
+			$button_size_choices['custom'] = __( 'Custom (Pro Only)', 'zontact' );
+		}
+
+		$settings[] = array(
+			'id'      => 'button_size',
+			'title'   => __( 'Button Size', 'zontact' ),
+			'desc'    => __( 'Predefined button sizes or use custom padding.', 'zontact' ),
+			'type'    => 'select',
+			'choices' => $button_size_choices,
+			'default' => 'medium',
+			'tab'     => 'button',
+			'section' => __( 'Size & Spacing', 'zontact' ),
+		);
+
+		// Custom padding field - only for Pro users
+		if ( $is_pro ) {
+			$settings[] = array(
 				'id'            => 'button_custom_size',
 				'title'         => __( 'Custom Padding', 'zontact' ),
 				'desc'          => __( 'Custom padding (e.g., "10px 16px" for top/bottom and left/right). Only used when Button Size is set to Custom.', 'zontact' ),
@@ -116,7 +133,10 @@ class Button {
 					'field'  => 'button_size',
 					'values' => array( 'custom' ),
 				),
-			),
+			);
+		}
+
+		$settings = array_merge( $settings, array(
 			array(
 				'id'      => 'button_bg_color',
 				'title'   => __( 'Background Color', 'zontact' ),
@@ -146,6 +166,8 @@ class Button {
 				'tab'     => 'button',
 				'section' => __( 'Colors', 'zontact' ),
 			),
-		);
+		) );
+
+		return $settings;
     }
 }

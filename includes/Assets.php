@@ -83,6 +83,8 @@ final class Assets {
 			return;
 		}
 
+		$is_pro = function_exists( 'zontact_is_pro' ) && zontact_is_pro();
+
 		$accent   = ! empty( $options['accent_color'] ) ? esc_attr( $options['accent_color'] ) : '#2563eb';
 		$css_vars = array( "--zontact-accent: {$accent};" );
 
@@ -102,8 +104,13 @@ final class Assets {
 		$custom_padding = ! empty( $options['button_custom_size'] ) ? esc_attr( $options['button_custom_size'] ) : '';
 
 		$size_css = '';
-		if ( 'custom' === $button_size && ! empty( $custom_padding ) ) {
+
+		// Pro validation: Only apply custom size for Pro users
+		if ( 'custom' === $button_size && ! empty( $custom_padding ) && $is_pro ) {
 			$size_css = ".zontact-button { padding: {$custom_padding} !important; }";
+		} elseif ( 'custom' === $button_size && ! $is_pro ) {
+			// Fallback to medium for non-Pro users who somehow got custom size set
+			$size_css = '/* Custom button size is a Pro feature */';
 		}
 
 		// Generate dynamic CSS

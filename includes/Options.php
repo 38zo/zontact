@@ -39,7 +39,7 @@ class Options {
 			'button_icon'           => 'message', // Default icon name
 			'button_icon_size'      => 20, // Icon size in pixels
 			'button_size'           => 'medium', // 'small', 'medium', 'large', 'custom'
-			'button_custom_size'    => '', // Custom size for padding
+			'button_custom_size'    => '', // Custom size for padding (Pro only)
 			'button_bg_color'       => '', // Empty uses accent_color
 			'button_text_color'     => '#ffffff',
 			'button_border_radius'  => 9999, // Large value for fully rounded (pill shape)
@@ -71,7 +71,18 @@ class Options {
 			$opts = array();
 		}
 
-		return array_merge( $defaults, $opts );
+		$options = array_merge( $defaults, $opts );
+
+		// Pro validation: Force non-Pro users to use preset sizes
+		if ( 'custom' === $options['button_size'] ) {
+			$is_pro = function_exists( 'zontact_is_pro' ) && zontact_is_pro();
+			if ( ! $is_pro ) {
+				$options['button_size'] = 'medium'; // Fallback to medium
+				$options['button_custom_size'] = ''; // Clear custom padding
+			}
+		}
+
+		return $options;
 	}
 
 	/**
@@ -90,6 +101,9 @@ class Options {
 		// Merge with defaults to ensure all keys exist
 		$existing = array_merge( $defaults, $existing );
 		$output   = $existing;
+
+		// Check if Pro is active
+		$is_pro = function_exists( 'zontact_is_pro' ) && zontact_is_pro();
 
 		// Only update fields that are present in the input (from current tab)
 		if ( isset( $input['enable_button'] ) ) {
@@ -154,13 +168,40 @@ class Options {
 		}
 
 		if ( isset( $input['button_size'] ) ) {
-			$output['button_size'] = in_array( $input['button_size'], array( 'small', 'medium', 'large', 'custom' ), true )
-				? $input['button_size']
+			$valid_sizes = array( 'small', 'medium', 'large', 'custom' );
+			$size = $input['button_size'];
+			
+			// Pro validation: Only allow 'custom' for Pro users
+			if ( 'custom' === $size && ! $is_pro ) {
+				$size = 'medium'; // Force fallback for non-Pro users
+				
+				// Optional: Add admin notice
+				add_settings_error(
+					'zontact_options',
+					'pro_feature_required',
+					__( 'Custom button size is a Pro feature. Please upgrade to unlock this option.', 'zontact' ),
+					'warning'
+				);
+			}
+
+			$output['button_size'] = in_array( $size, $valid_sizes, true )
+				? $size
 				: $defaults['button_size'];
 		}
 
+		// Pro only: Custom padding
 		if ( isset( $input['button_custom_size'] ) ) {
-			$output['button_custom_size'] = sanitize_text_field( $input['button_custom_size'] );
+			if ( $is_pro ) {
+				// Only save if Pro and button_size is custom
+				if ( 'custom' === $output['button_size'] ) {
+					$output['button_custom_size'] = sanitize_text_field( $input['button_custom_size'] );
+				} else {
+					$output['button_custom_size'] = '';
+				}
+			} else {
+				// Clear for non-Pro users
+				$output['button_custom_size'] = '';
+			}
 		}
 
 		if ( isset( $input['button_bg_color'] ) ) {
