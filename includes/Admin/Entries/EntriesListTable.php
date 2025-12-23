@@ -70,7 +70,7 @@ final class EntriesListTable extends \WP_List_Table {
 
 	/** @inheritDoc */
 	protected function column_default( $item, $column_name ) {
-			switch ( $column_name ) {
+		switch ( $column_name ) {
 			case 'id':
 				return (int) $item['id'];
 			case 'name':
@@ -79,32 +79,32 @@ final class EntriesListTable extends \WP_List_Table {
 				return esc_html( (string) $item['email'] );
 			case 'subject':
 				return esc_html( (string) ( $item['subject'] ?? '' ) );
-				case 'email_status':
-					$status = isset( $item['email_status'] ) ? (string) $item['email_status'] : 'pending';
-					$label  = __( 'Pending', 'zontact' );
+			case 'email_status':
+				$status = isset( $item['email_status'] ) ? (string) $item['email_status'] : 'pending';
+				$label  = __( 'Pending', 'zontact' );
 
-					switch ( $status ) {
-						case 'sent':
-							$label = __( 'Sent', 'zontact' );
-							break;
-						case 'failed':
-							$label = __( 'Failed', 'zontact' );
-							break;
+				switch ( $status ) {
+					case 'sent':
+						$label = __( 'Sent', 'zontact' );
+						break;
+					case 'failed':
+						$label = __( 'Failed', 'zontact' );
+						break;
+				}
+				$output = esc_html( $label );
+
+				if ( ! empty( $item['email_sent_at'] ) ) {
+					$sent_time = strtotime( (string) $item['email_sent_at'] );
+					if ( $sent_time ) {
+						$output .= '<br><span class="description">' . esc_html( date_i18n( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), $sent_time ) ) . '</span>';
 					}
-					$output = esc_html( $label );
+				}
 
-					if ( ! empty( $item['email_sent_at'] ) ) {
-						$sent_time = strtotime( (string) $item['email_sent_at'] );
-						if ( $sent_time ) {
-							$output .= '<br><span class="description">' . esc_html( date_i18n( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), $sent_time ) ) . '</span>';
-						}
-					}
+				if ( 'failed' === $status && ! empty( $item['email_error'] ) ) {
+					$output .= '<br><span class="description">' . esc_html( (string) $item['email_error'] ) . '</span>';
+				}
 
-					if ( 'failed' === $status && ! empty( $item['email_error'] ) ) {
-						$output .= '<br><span class="description">' . esc_html( (string) $item['email_error'] ) . '</span>';
-					}
-
-					return $output;
+				return $output;
 			case 'message':
 				return esc_html( wp_trim_words( wp_strip_all_tags( (string) $item['message'] ), 20, '…' ) );
 			case 'created_at':
@@ -117,9 +117,17 @@ final class EntriesListTable extends \WP_List_Table {
 
 	/** @inheritDoc */
 	protected function get_bulk_actions(): array {
-		return [
+		$actions = [
 			'delete' => __( 'Delete', 'zontact' ),
 		];
+
+		// Add export selected action for Pro users
+		$is_pro = function_exists( 'zontact_is_pro' ) && zontact_is_pro();
+		if ( $is_pro ) {
+			$actions['export_selected'] = __( 'Export Selected (CSV)', 'zontact' );
+		}
+
+		return $actions;
 	}
 
 	/**
@@ -128,11 +136,109 @@ final class EntriesListTable extends \WP_List_Table {
 	 * @return void
 	 */
 	public function process_bulk_action(): void {
-		if ( 'delete' === $this->current_action() && ! empty( $_POST['ids'] ) && is_array( $_POST['ids'] ) ) {
+		$action = $this->current_action();
+
+		if ( ! $action ) {
+			return;
+		}
+
+		// Process delete action
+		if ( 'delete' === $action && ! empty( $_POST['ids'] ) && is_array( $_POST['ids'] ) ) {
 			check_admin_referer( 'bulk-' . $this->_args['plural'] );
 			$ids = array_map( 'intval', wp_unslash( $_POST['ids'] ) );
 			$this->repository->delete( $ids );
+
+			// Redirect to avoid resubmission
+			wp_safe_redirect( remove_query_arg( [ 'action', 'action2', 'ids', '_wpnonce', '_wp_http_referer' ] ) );
+			exit;
 		}
+
+		// Process export selected action (Pro only)
+		if ( 'export_selected' === $action && ! empty( $_POST['ids'] ) && is_array( $_POST['ids'] ) ) {
+			check_admin_referer( 'bulk-' . $this->_args['plural'] );
+
+			$is_pro = function_exists( 'zontact_is_pro' ) && zontact_is_pro();
+			if ( ! $is_pro ) {
+				wp_die( esc_html__( 'CSV export is a Pro feature.', 'zontact' ) );
+			}
+
+			$ids = array_map( 'intval', wp_unslash( $_POST['ids'] ) );
+			$this->export_selected_entries( $ids );
+			exit;
+		}
+	}
+
+	/**
+	 * Export selected entries to CSV (Pro only).
+	 *
+	 * @param array $ids Entry IDs to export.
+	 * @return void
+	 */
+	private function export_selected_entries( array $ids ): void {
+		// Use the repository method instead of direct query
+		$entries = $this->repository->get_by_ids_for_export( $ids );
+
+		if ( empty( $entries ) ) {
+			wp_die( esc_html__( 'No entries found to export.', 'zontact' ) );
+		}
+
+		// Generate CSV
+		$this->generate_csv_output( $entries, 'selected' );
+	}
+
+	/**
+	 * Generate CSV output.
+	 *
+	 * @param array  $entries Array of entries.
+	 * @param string $type    Export type (selected|all).
+	 * @return void
+	 */
+	private function generate_csv_output( array $entries, string $type = 'all' ): void {
+		// Set headers for CSV download
+		header( 'Content-Type: text/csv; charset=utf-8' );
+		header( 'Content-Disposition: attachment; filename=zontact-entries-' . $type . '-' . gmdate( 'Y-m-d-His' ) . '.csv' );
+		header( 'Pragma: no-cache' );
+		header( 'Expires: 0' );
+
+		// Open output stream
+		$output = fopen( 'php://output', 'w' );
+
+		// Add BOM for Excel UTF-8 support
+		fprintf( $output, chr(0xEF).chr(0xBB).chr(0xBF) );
+
+		// CSV Headers
+		$headers = [
+			__( 'ID', 'zontact' ),
+			__( 'Name', 'zontact' ),
+			__( 'Email', 'zontact' ),
+			__( 'Subject', 'zontact' ),
+			__( 'Message', 'zontact' ),
+			__( 'Email Status', 'zontact' ),
+			__( 'Email Sent At', 'zontact' ),
+			__( 'Email Error', 'zontact' ),
+			__( 'Created At', 'zontact' ),
+		];
+
+		fputcsv( $output, $headers );
+
+		// Add data rows
+		foreach ( $entries as $entry ) {
+			$row = [
+				$entry['id'] ?? '',
+				$entry['name'] ?? '',
+				$entry['email'] ?? '',
+				$entry['subject'] ?? '',
+				$entry['message'] ?? '',
+				$entry['email_status'] ?? 'pending',
+				$entry['email_sent_at'] ?? '',
+				$entry['email_error'] ?? '',
+				$entry['created_at'] ?? '',
+			];
+
+			fputcsv( $output, $row );
+		}
+
+		fclose( $output );
 	}
 
 	/** @inheritDoc */
@@ -145,7 +251,6 @@ final class EntriesListTable extends \WP_List_Table {
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$search    = isset( $_REQUEST['s'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['s'] ) ) : null;
-
 
 		$this->_column_headers = [ $this->get_columns(), [], $this->get_sortable_columns() ];
 
@@ -161,5 +266,3 @@ final class EntriesListTable extends \WP_List_Table {
 		] );
 	}
 }
-
-

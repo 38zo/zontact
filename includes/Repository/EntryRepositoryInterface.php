@@ -39,6 +39,19 @@ interface EntryRepositoryInterface {
 	 * @return int       Number of rows deleted.
 	 */
 	public function delete( array $ids ): int;
+
+	/**
+	 * Get all entries for export (no pagination).
+	 *
+	 * @return array
+	 */
+	public function get_all_for_export(): array;
+
+	/**
+	 * Get specific entries by IDs for export.
+	 *
+	 * @param int[] $ids Entry IDs to export.
+	 * @return array
+	 */
+	public function get_by_ids_for_export( array $ids ): array;
 }
-
-

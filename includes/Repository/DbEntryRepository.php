@@ -142,6 +142,75 @@ final class DbEntryRepository implements EntryRepositoryInterface {
 		return (int) $wpdb->rows_affected;
 	}
 
+	/**
+	 * Get all entries for export (no pagination).
+	 *
+	 * @return array
+	 */
+	public function get_all_for_export(): array {
+		global $wpdb;
+		
+		$table = Database::table_messages();
+
+		// Create cache key for export query
+		$cache_key = 'zontact_export_all';
+		
+		// Check cache first
+		$cached_result = wp_cache_get( $cache_key, 'zontact' );
+		if ( false !== $cached_result ) {
+			return (array) $cached_result;
+		}
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		$results = $wpdb->get_results(
+			"SELECT id, form_key, name, email, phone, subject, message, email_status, email_error, email_sent_at, created_at 
+			FROM {$table} 
+			ORDER BY created_at DESC",
+			ARRAY_A
+		);
+
+		$results = $results ?: [];
+		
+		// Cache for 5 minutes
+		wp_cache_set( $cache_key, $results, 'zontact', 300 );
+
+		return $results;
+	}
+
+	/**
+	 * Get specific entries by IDs for export.
+	 *
+	 * @param int[] $ids Entry IDs to export.
+	 * @return array
+	 */
+	public function get_by_ids_for_export( array $ids ): array {
+		global $wpdb;
+		
+		$table = Database::table_messages();
+
+		// Sanitize the IDs
+		$ids = array_values( array_filter( array_map( 'absint', $ids ) ) );
+		if ( empty( $ids ) ) {
+			return [];
+		}
+
+		// Build placeholders for safe prepared statement
+		$placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$results = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT id, form_key, name, email, phone, subject, message, email_status, email_error, email_sent_at, created_at 
+				FROM {$table} 
+				WHERE id IN ({$placeholders})
+				ORDER BY created_at DESC",
+				$ids
+			),
+			ARRAY_A
+		);
+
+		return $results ?: [];
+	}
 
 	/**
 	 * Clear all cached entries and counts.
@@ -149,17 +218,16 @@ final class DbEntryRepository implements EntryRepositoryInterface {
 	 * @return void
 	 */
 	private function clear_cache(): void {
-		// Clear specific cache keys for entries and counts.
-		global $wpdb;
+		// Clear specific cache keys for entries and counts
+		wp_cache_delete( 'zontact_export_all', 'zontact' );
+
+		for ( $page = 1; $page <= 10; $page++ ) {
+			for ( $per_page = 10; $per_page <= 30; $per_page += 10 ) {
+				$cache_key = 'zontact_entries_' . md5( $page . '_' . $per_page . '_' );
+				wp_cache_delete( $cache_key, 'zontact' );
+			}
+		}
 		
-		// Clear common cache patterns for our plugin.
-		// This is a simplified approach since WordPress doesn't provide group deletion.
-		wp_cache_delete( 'zontact_entries_all', 'zontact' );
-		wp_cache_delete( 'zontact_count_all', 'zontact' );
-		
-		// For a more thorough cleanup, we could implement a cache key tracking system,
-		// but for this plugin's scope, the above should suffice.
+		wp_cache_delete( 'zontact_count_', 'zontact' );
 	}
 }
-
-
