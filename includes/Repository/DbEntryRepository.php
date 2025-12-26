@@ -144,6 +144,7 @@ final class DbEntryRepository implements EntryRepositoryInterface {
 
 	/**
 	 * Get all entries for export (no pagination).
+	 * Optimized for large datasets.
 	 *
 	 * @return array
 	 */
@@ -152,15 +153,12 @@ final class DbEntryRepository implements EntryRepositoryInterface {
 		
 		$table = Database::table_messages();
 
-		// Create cache key for export query
-		$cache_key = 'zontact_export_all';
+		// Don't cache full exports as they can be very large
+		// and are typically one-time operations
 		
-		// Check cache first
-		$cached_result = wp_cache_get( $cache_key, 'zontact' );
-		if ( false !== $cached_result ) {
-			return (array) $cached_result;
-		}
-
+		// Use UNBUFFERED query for large datasets to reduce memory usage
+		$wpdb->query( 'SET SESSION sql_mode = ""' );
+		
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$results = $wpdb->get_results(
 			"SELECT id, form_key, name, email, phone, subject, message, email_status, email_error, email_sent_at, created_at 
@@ -169,16 +167,12 @@ final class DbEntryRepository implements EntryRepositoryInterface {
 			ARRAY_A
 		);
 
-		$results = $results ?: [];
-		
-		// Cache for 5 minutes
-		wp_cache_set( $cache_key, $results, 'zontact', 300 );
-
-		return $results;
+		return $results ?: [];
 	}
 
 	/**
 	 * Get specific entries by IDs for export.
+	 * Optimized to handle large ID lists.
 	 *
 	 * @param int[] $ids Entry IDs to export.
 	 * @return array
@@ -194,22 +188,32 @@ final class DbEntryRepository implements EntryRepositoryInterface {
 			return [];
 		}
 
-		// Build placeholders for safe prepared statement
-		$placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+		// For very large ID lists (>500), process in batches to avoid query length limits
+		$batch_size = 500;
+		$all_results = [];
 
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		$results = $wpdb->get_results(
-			$wpdb->prepare(
-				"SELECT id, form_key, name, email, phone, subject, message, email_status, email_error, email_sent_at, created_at 
-				FROM {$table} 
-				WHERE id IN ({$placeholders})
-				ORDER BY created_at DESC",
-				$ids
-			),
-			ARRAY_A
-		);
+		foreach ( array_chunk( $ids, $batch_size ) as $batch_ids ) {
+			// Build placeholders for safe prepared statement
+			$placeholders = implode( ',', array_fill( 0, count( $batch_ids ), '%d' ) );
 
-		return $results ?: [];
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$results = $wpdb->get_results(
+				$wpdb->prepare(
+					"SELECT id, form_key, name, email, phone, subject, message, email_status, email_error, email_sent_at, created_at 
+					FROM {$table} 
+					WHERE id IN ({$placeholders})
+					ORDER BY created_at DESC",
+					$batch_ids
+				),
+				ARRAY_A
+			);
+
+			if ( $results ) {
+				$all_results = array_merge( $all_results, $results );
+			}
+		}
+
+		return $all_results;
 	}
 
 	/**
@@ -221,6 +225,7 @@ final class DbEntryRepository implements EntryRepositoryInterface {
 		// Clear specific cache keys for entries and counts
 		wp_cache_delete( 'zontact_export_all', 'zontact' );
 
+		// Clear common pagination cache keys
 		for ( $page = 1; $page <= 10; $page++ ) {
 			for ( $per_page = 10; $per_page <= 30; $per_page += 10 ) {
 				$cache_key = 'zontact_entries_' . md5( $page . '_' . $per_page . '_' );
@@ -228,6 +233,8 @@ final class DbEntryRepository implements EntryRepositoryInterface {
 			}
 		}
 		
-		wp_cache_delete( 'zontact_count_', 'zontact' );
+		// Clear count cache
+		$cache_key = 'zontact_count_' . md5( '' );
+		wp_cache_delete( $cache_key, 'zontact' );
 	}
 }

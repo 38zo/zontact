@@ -55,17 +55,18 @@ final class EntriesPage {
 	}
 
 	/**
-	 * Screen load handler: set screen options if needed.
+	 * Screen load handler: handles exports BEFORE any output.
 	 *
 	 * @return void
 	 */
 	public function load_screen(): void {
-		// Handle CSV export for Pro users
+		// CRITICAL: Handle CSV export BEFORE any output is sent
 		$this->maybe_handle_export();
 	}
 
 	/**
 	 * Handle CSV export if requested (Pro only).
+	 * Must be called before any HTML output.
 	 *
 	 * @return void
 	 */
@@ -91,29 +92,50 @@ final class EntriesPage {
 			wp_die( esc_html__( 'CSV export is a Pro feature. Please upgrade to unlock this functionality.', 'zontact' ) );
 		}
 
+		// Clean any output buffers before sending CSV
+		if ( ob_get_level() ) {
+			ob_end_clean();
+		}
+
+		// Increase limits for large exports
+		@set_time_limit( 300 ); // 5 minutes
+		@ini_set( 'memory_limit', '256M' );
+
 		// Get all entries (no pagination for export)
 		$entries = $this->repository->get_all_for_export();
 
-		// Generate CSV
+		// Generate CSV with streaming
 		$this->generate_csv( $entries );
 		exit;
 	}
 
 	/**
-	 * Generate and download CSV file.
+	 * Generate and stream CSV file for large datasets.
 	 *
 	 * @param array $entries Array of entry data.
 	 * @return void
 	 */
 	private function generate_csv( array $entries ): void {
+		// Disable output buffering and compression for streaming
+		if ( function_exists( 'apache_setenv' ) ) {
+			@apache_setenv( 'no-gzip', '1' );
+		}
+		@ini_set( 'zlib.output_compression', '0' );
+		@ini_set( 'implicit_flush', '1' );
+
 		// Set headers for CSV download
 		header( 'Content-Type: text/csv; charset=utf-8' );
 		header( 'Content-Disposition: attachment; filename=zontact-entries-' . gmdate( 'Y-m-d-His' ) . '.csv' );
 		header( 'Pragma: no-cache' );
+		header( 'Cache-Control: no-cache, must-revalidate' );
 		header( 'Expires: 0' );
 
 		// Open output stream
 		$output = fopen( 'php://output', 'w' );
+
+		if ( false === $output ) {
+			wp_die( esc_html__( 'Unable to open output stream for CSV export.', 'zontact' ) );
+		}
 
 		// Add BOM for Excel UTF-8 support
 		fprintf( $output, chr(0xEF).chr(0xBB).chr(0xBF) );
@@ -133,21 +155,32 @@ final class EntriesPage {
 
 		fputcsv( $output, $headers );
 
-		// Add data rows
-		foreach ( $entries as $entry ) {
-			$row = [
-				$entry['id'] ?? '',
-				$entry['name'] ?? '',
-				$entry['email'] ?? '',
-				$entry['subject'] ?? '',
-				$entry['message'] ?? '',
-				$entry['email_status'] ?? 'pending',
-				$entry['email_sent_at'] ?? '',
-				$entry['email_error'] ?? '',
-				$entry['created_at'] ?? '',
-			];
+		// Process entries in chunks to handle large datasets efficiently
+		$chunk_size = 100;
+		$chunks = array_chunk( $entries, $chunk_size );
 
-			fputcsv( $output, $row );
+		foreach ( $chunks as $chunk ) {
+			foreach ( $chunk as $entry ) {
+				$row = [
+					$entry['id'] ?? '',
+					$entry['name'] ?? '',
+					$entry['email'] ?? '',
+					$entry['subject'] ?? '',
+					$entry['message'] ?? '',
+					$entry['email_status'] ?? 'pending',
+					$entry['email_sent_at'] ?? '',
+					$entry['email_error'] ?? '',
+					$entry['created_at'] ?? '',
+				];
+
+				fputcsv( $output, $row );
+			}
+
+			// Flush output after each chunk for large exports
+			if ( ob_get_level() > 0 ) {
+				ob_flush();
+			}
+			flush();
 		}
 
 		fclose( $output );

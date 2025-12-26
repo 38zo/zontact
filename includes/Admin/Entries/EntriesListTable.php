@@ -154,12 +154,18 @@ final class EntriesListTable extends \WP_List_Table {
 		}
 
 		// Process export selected action (Pro only)
+		// CRITICAL: This must exit before any output is sent
 		if ( 'export_selected' === $action && ! empty( $_POST['ids'] ) && is_array( $_POST['ids'] ) ) {
 			check_admin_referer( 'bulk-' . $this->_args['plural'] );
 
 			$is_pro = function_exists( 'zontact_is_pro' ) && zontact_is_pro();
 			if ( ! $is_pro ) {
 				wp_die( esc_html__( 'CSV export is a Pro feature.', 'zontact' ) );
+			}
+
+			// Clean any output buffers before sending CSV
+			if ( ob_get_level() ) {
+				ob_end_clean();
 			}
 
 			$ids = array_map( 'intval', wp_unslash( $_POST['ids'] ) );
@@ -175,7 +181,11 @@ final class EntriesListTable extends \WP_List_Table {
 	 * @return void
 	 */
 	private function export_selected_entries( array $ids ): void {
-		// Use the repository method instead of direct query
+		// For large datasets, increase limits
+		@set_time_limit( 300 ); // 5 minutes
+		@ini_set( 'memory_limit', '256M' );
+
+		// Use the repository method to get entries
 		$entries = $this->repository->get_by_ids_for_export( $ids );
 
 		if ( empty( $entries ) ) {
@@ -187,21 +197,33 @@ final class EntriesListTable extends \WP_List_Table {
 	}
 
 	/**
-	 * Generate CSV output.
+	 * Generate CSV output with streaming for large datasets.
 	 *
 	 * @param array  $entries Array of entries.
 	 * @param string $type    Export type (selected|all).
 	 * @return void
 	 */
 	private function generate_csv_output( array $entries, string $type = 'all' ): void {
+		// Disable WordPress output buffering and caching
+		if ( function_exists( 'apache_setenv' ) ) {
+			@apache_setenv( 'no-gzip', '1' );
+		}
+		@ini_set( 'zlib.output_compression', '0' );
+		@ini_set( 'implicit_flush', '1' );
+
 		// Set headers for CSV download
 		header( 'Content-Type: text/csv; charset=utf-8' );
 		header( 'Content-Disposition: attachment; filename=zontact-entries-' . $type . '-' . gmdate( 'Y-m-d-His' ) . '.csv' );
 		header( 'Pragma: no-cache' );
+		header( 'Cache-Control: no-cache, must-revalidate' );
 		header( 'Expires: 0' );
 
-		// Open output stream
+		// Open output stream directly to php://output
 		$output = fopen( 'php://output', 'w' );
+
+		if ( false === $output ) {
+			wp_die( esc_html__( 'Unable to open output stream for CSV export.', 'zontact' ) );
+		}
 
 		// Add BOM for Excel UTF-8 support
 		fprintf( $output, chr(0xEF).chr(0xBB).chr(0xBF) );
@@ -221,21 +243,32 @@ final class EntriesListTable extends \WP_List_Table {
 
 		fputcsv( $output, $headers );
 
-		// Add data rows
-		foreach ( $entries as $entry ) {
-			$row = [
-				$entry['id'] ?? '',
-				$entry['name'] ?? '',
-				$entry['email'] ?? '',
-				$entry['subject'] ?? '',
-				$entry['message'] ?? '',
-				$entry['email_status'] ?? 'pending',
-				$entry['email_sent_at'] ?? '',
-				$entry['email_error'] ?? '',
-				$entry['created_at'] ?? '',
-			];
+		// Stream data rows in chunks to handle large datasets
+		$chunk_size = 100;
+		$chunks = array_chunk( $entries, $chunk_size );
 
-			fputcsv( $output, $row );
+		foreach ( $chunks as $chunk ) {
+			foreach ( $chunk as $entry ) {
+				$row = [
+					$entry['id'] ?? '',
+					$entry['name'] ?? '',
+					$entry['email'] ?? '',
+					$entry['subject'] ?? '',
+					$entry['message'] ?? '',
+					$entry['email_status'] ?? 'pending',
+					$entry['email_sent_at'] ?? '',
+					$entry['email_error'] ?? '',
+					$entry['created_at'] ?? '',
+				];
+
+				fputcsv( $output, $row );
+			}
+
+			// Flush output buffer after each chunk for large exports
+			if ( ob_get_level() > 0 ) {
+				ob_flush();
+			}
+			flush();
 		}
 
 		fclose( $output );
@@ -254,6 +287,8 @@ final class EntriesListTable extends \WP_List_Table {
 
 		$this->_column_headers = [ $this->get_columns(), [], $this->get_sortable_columns() ];
 
+		// CRITICAL: Process bulk actions BEFORE fetching items
+		// This ensures exports happen before any HTML output
 		$this->process_bulk_action();
 
 		$total_items = $this->repository->count( $search );
