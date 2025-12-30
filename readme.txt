@@ -48,8 +48,8 @@ Zontact is designed to stay out of your way:
 ### Setup (Takes Less Than a Minute)
 
 1. Install and activate Zontact
-2. Open **Zontact → Settings** to adjust basic options
-3. The floating contact button appears automatically on your site
+2. Open **Zontact → Settings** to customize your button and form
+3. The floating contact button appears automatically on your site with an option to disable it
 
 That’s it.
 
@@ -65,7 +65,7 @@ That’s it.
 
 == Accessibility ==
 
-Accessibility is a core feature—not an afterthought.
+Accessibility is a core feature not an afterthought.
 
 Zontact includes:
 
@@ -94,7 +94,7 @@ Yes. Zontact follows WCAG and WordPress accessibility best practices, including 
 Yes. The floating button and modal are independent of your theme’s layout and work with virtually all WordPress themes.
 
 = Will you add more features? =
-Zontact is intentionally focused on simplicity. Future enhancements will prioritize usability, performance, and accessibility—not feature bloat.
+Zontact is intentionally focused on simplicity. Future enhancements will prioritize usability, performance, and accessibility not feature bloat.
 
 == Screenshots ==
 
