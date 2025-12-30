@@ -1,7 +1,7 @@
 === Zontact ===
 Contributors: 38zo, lewisushindi
 Donate link: https://ko-fi.com/lewis38zo
-Tags: contact form, floating button, modal, accessibility, contact
+Tags: floating contact button, contact form, lightweight, accessible, modal
 Requires at least: 6.0
 Tested up to: 6.9
 Requires PHP: 7.4
@@ -9,97 +9,125 @@ Stable tag: 1.1.1
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
-One button, one form, zero hassle. Floating contact button opens an accessible modal with a contact form.
+A simple floating contact button for WordPress: fast, accessible, and clutter-free.
 
 == Description ==
 
-Zontact provides a simple, elegant floating contact button that opens an accessible modal with a contact form. Perfect for websites that need a quick way for visitors to get in touch without cluttering the design.
+Most contact form plugins try to do everything and end up slowing your site down.
 
-= Key Features =
+**Zontact does one thing well.**
 
-* **Floating Contact Button** - Clean, minimal button that floats on your site
-* **Accessible Modal** - ARIA-compliant modal dialog with keyboard navigation
-* **Customizable Design** - Customize button icon, background color, text color, size, shape, border radius, accent placement (left/right) and many more.
-* **Spam Protection** - Built-in honeypot field to prevent spam submissions
-* **Email Notifications** - Automatic email notifications to site administrators
-* **Message Storage** - Optional storage of contact messages in database
-* **Admin Interface** - View and manage submitted messages from WordPress admin
-* **Translation Ready** - Fully prepared for internationalization
+It adds a clean, lightweight floating contact button to your WordPress site. When clicked, it opens an **accessible modal contact form** so visitors can reach you quickly without page reloads, visual clutter, or bloated features you don’t need.
 
-= Accessibility Features =
+Zontact is built for performance, usability, and accessibility. If you want a simple way for users to contact you without installing a heavy form builder, Zontact is for you.
 
-Zontact is built with accessibility in mind from the ground up. Every element in the contact form and modal is designed to work for all users, including those using assistive technologies.
+### What Zontact Does
 
-* Proper ARIA labels and roles for screen readers
-* Smooth keyboard navigation
-* Automatic focus management when opening and closing the modal
-* Clean, semantic HTML structure
-* Follows core WordPress and WCAG accessibility guidelines
+* Adds a floating contact button to your site
+* Opens a fast, accessible modal with a contact form
+* Sends messages directly to your email
+* Optionally stores messages in WordPress for easy access
+
+No page builders. No third-party services. No unnecessary extras.
+
+### Who It’s For
+
+* Small business owners who want customers to contact them easily
+* Freelancers who need a reliable contact solution for client sites
+* Anyone who values speed, simplicity, and clean design
+
+### Performance & Accessibility First
+
+Zontact is designed to stay out of your way:
+
+* Lightweight code with minimal assets
+* No frontend bloat or external dependencies
+* Fully accessible modal with keyboard navigation and screen reader support
+* Built using WordPress and WCAG accessibility best practices
+
+### Setup (Takes Less Than a Minute)
+
+1. Install and activate Zontact
+2. Open **Zontact → Settings** to adjust basic options
+3. The floating contact button appears automatically on your site
+
+That’s it.
+
+== Key Features ==
+
+* **Floating Contact Button** – Clean, minimal button that stays visible without disrupting your design
+* **Accessible Modal Contact Form** – ARIA-compliant, keyboard-friendly modal dialog
+* **Simple Customization** – Adjust button position, colors, size, and shape
+* **Spam Protection** – Built-in honeypot to reduce spam submissions
+* **Email Notifications** – Get messages delivered straight to your inbox
+* **Message Storage (Optional)** – View submissions inside WordPress
+* **Translation Ready** – Fully internationalized and ready for localization
+
+== Accessibility ==
+
+Accessibility is a core feature—not an afterthought.
+
+Zontact includes:
+
+* Proper ARIA roles and labels
+* Logical keyboard navigation
+* Automatic focus management
+* Semantic HTML structure
+* Compliance with WordPress accessibility guidelines
 
 == Installation ==
 
-1. Upload the plugin files to the `/wp-content/plugins/zontact` directory, or install the plugin through the WordPress plugins screen directly.
-2. Activate the plugin through the 'Plugins' screen in WordPress
-3. Go to Zontact > Settings to configure your contact form
-4. The floating contact button will automatically appear on your site
+1. Upload the plugin to the `/wp-content/plugins/zontact` directory, or install it directly from the WordPress plugin directory.
+2. Activate the plugin through the **Plugins** screen.
+3. Go to **Zontact → Settings** to configure your contact button.
+4. The floating contact button will appear on the frontend automatically.
 
 == Frequently Asked Questions ==
 
-= Does this plugin work with all themes? =
-
-Yes, Zontact is designed to work with any WordPress theme. The floating button and modal are positioned independently of your theme's layout.
-
-= Can I customize the appearance? =
-
-Yes! You can change the button position (left or right), accent color, and customize the form fields through the plugin settings.
+= Does Zontact slow down my site? =
+No. Zontact is lightweight and loads only what it needs. There are no external scripts or unnecessary assets.
 
 = Is the contact form accessible? =
+Yes. Zontact follows WCAG and WordPress accessibility best practices, including keyboard navigation and screen reader support.
 
-Absolutely. Zontact follows WCAG guidelines and includes full ARIA support, keyboard navigation, and semantic HTML structure.
+= Does it work with any theme? =
+Yes. The floating button and modal are independent of your theme’s layout and work with virtually all WordPress themes.
 
-= Does it prevent spam? =
-
-Yes, Zontact includes a honeypot field and other spam prevention measures to protect your contact form.
-
-= Can I see submitted messages? =
-
-Yes, you can view all submitted messages in the WordPress admin under Zontact > Entries.
+= Will you add more features? =
+Zontact is intentionally focused on simplicity. Future enhancements will prioritize usability, performance, and accessibility—not feature bloat.
 
 == Screenshots ==
 
-1. Floating contact button on a website
-2. Contact form modal when button is clicked
-3. Admin settings page for customization
-4. Entries list showing submitted messages
+1. Floating contact button on the frontend (desktop view)
+2. Accessible contact form modal open
+3. Mobile view of the floating contact button
+4. Minimal settings panel in the WordPress admin
 
 == Changelog ==
 
 = 1.1.1 =
-* Refactor codebase with clear separation of concerns
+* Refactored codebase for improved structure and maintainability
 
 = 1.1.0 =
-* Implement Button Customization
+* Added button customization options
 
 = 1.0.9 =
-* Fix: Button visibility bug
+* Fixed button visibility issue
 
 = 1.0.8 =
-* Improved settings page with a new tabbed layout for better organization.
-* Added support for developers to easily extend settings sections and fields.
-* Introduced a button visibility toggle allowing admins to control when the floating contact button appears on the frontend.
-* Minor UI refinements and code cleanup for better maintainability.
+* Improved settings UI with tabbed layout
+* Added button visibility toggle
+* General UI refinements and cleanup
 
 = 1.0.0 =
 * Initial release
 * Floating contact button with modal
-* Customizable design options
 * Email notifications
-* Message storage and admin interface
+* Optional message storage
 * Full accessibility support
 * Translation ready
-
 
 == Upgrade Notice ==
 
 = 1.0.0 =
-Initial release of Zontact - a simple, accessible floating contact form plugin.
+Initial release of Zontact – a simple, accessible floating contact button for WordPress.
