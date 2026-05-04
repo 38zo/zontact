@@ -23,17 +23,17 @@ define( 'ZONTACT_URL', plugin_dir_url( ZONTACT_FILE ) );
 /**
  * Autoload dependencies.
  */
-$autoload = ZONTACT_PATH . '/vendor/autoload.php';
-if ( file_exists( $autoload ) ) {
-    require_once $autoload;
+$zontact_autoload = ZONTACT_PATH . '/vendor/autoload.php';
+if ( file_exists( $zontact_autoload ) ) {
+    require_once $zontact_autoload;
 }
 
 /**
  * Include necessary files.
  */
-$functions = ZONTACT_PATH . '/includes/functions.php';
-if ( file_exists( $functions ) ) {
-	require_once $functions;
+$zontact_functions = ZONTACT_PATH . '/includes/functions.php';
+if ( file_exists( $zontact_functions ) ) {
+	require_once $zontact_functions;
 }
 
 /**
