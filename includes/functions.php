@@ -9,6 +9,8 @@
  * @copyright 2025 Zontact LLC
  */
 
+defined( 'ABSPATH' ) || exit;
+
  /**
  * Returns the name of the plugin. (Allows the name to be overridden.)
  * @return string
