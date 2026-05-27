@@ -13,13 +13,9 @@ A simple floating contact button for WordPress fast, accessible, and clutter-fre
 
 == Description ==
 
-Most contact form plugins try to solve every use case and end up slowing sites down.
+Zontact focuses on helping visitors contact you quickly and easily.
 
-**Zontact takes a different approach.**
-
-It focuses on one thing: helping visitors contact you quickly and easily.
-
-Zontact adds a clean, lightweight floating contact button to your WordPress site. When clicked, it opens an **accessible modal contact form**, allowing users to get in touch without page reloads, visual clutter, or unnecessary features.
+It adds a clean, floating customizable button to your WordPress site which  opens an **accessible modal contact form** when clicked, allowing users to contact you without page reloads.
 
 Built with performance, usability, and accessibility in mind, Zontact is ideal if you want a reliable contact solution without installing a heavy form builder.
 
