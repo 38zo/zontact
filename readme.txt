@@ -19,37 +19,7 @@ It adds a clean, floating customizable button to your WordPress site which  open
 
 Built with performance, usability, and accessibility in mind, Zontact is ideal if you want a reliable contact solution without installing a heavy form builder.
 
-### What Zontact Does
-
-* Adds a floating contact button to your site (optional)
-* Opens a fast, accessible modal contact form
-* Sends messages directly to your email
-* Optionally stores messages in WordPress for later reference
-
 No page builders. No third-party services. Just clear communication.
-
-### Who It’s For
-
-* Small business owners who want an easy way for customers to reach them
-* Freelancers building fast, reliable client websites
-* Anyone who values simplicity, performance, and clean design
-
-### Performance & Accessibility First
-
-Zontact is designed to stay out of your way:
-
-* Lightweight code with minimal assets
-* No frontend bloat or external dependencies
-* Fully accessible modal with keyboard and screen reader support
-* Built using WordPress and WCAG accessibility best practices
-
-### Setup (Takes Less Than a Minute)
-
-1. Install and activate Zontact
-2. Open **Zontact → Settings** to customize the button and form
-3. Enable or disable the floating contact button as needed
-
-That’s it.
 
 == Key Features ==
 
@@ -60,18 +30,6 @@ That’s it.
 * **Email Notifications** – Receive messages directly in your inbox
 * **Message Storage (Optional)** – View submitted messages in the WordPress admin
 * **Translation Ready** – Fully internationalized and localization-friendly
-
-== Accessibility ==
-
-Accessibility is a core feature—not an afterthought.
-
-Zontact includes:
-
-* Proper ARIA roles and labels
-* Logical keyboard navigation
-* Automatic focus management
-* Semantic HTML structure
-* Compliance with WordPress accessibility guidelines
 
 == Installation ==
 
