@@ -3,7 +3,7 @@ Contributors: 38zo, lewisushindi
 Donate link: https://ko-fi.com/lewis38zo
 Tags: floating contact button, contact form, lightweight, accessible, modal
 Requires at least: 6.0
-Tested up to: 6.9
+Tested up to: 7.0
 Requires PHP: 7.4
 Stable tag: 1.1.1
 License: GPLv3 or later
